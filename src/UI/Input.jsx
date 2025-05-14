@@ -1,7 +1,7 @@
 const InputForm = ({ value, setValue, textLabel, placeholder, type, id }) => {
   return (
     <>
-      <label htmlFor={id}>{textLabel}</label>
+      <label htmlFor={id} className="text-stone-50">{textLabel}</label>
       <input
         value={value}
         onChange={(e) => setValue(e.target.value)}
@@ -13,5 +13,4 @@ const InputForm = ({ value, setValue, textLabel, placeholder, type, id }) => {
     </>
   );
 };
-
 export default InputForm;
