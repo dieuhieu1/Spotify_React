@@ -1,11 +1,11 @@
 import Logo from "@/UI/Logo";
 
 import { Link, useNavigate } from "react-router-dom";
-import User from "../main/auth/user/User";
+import User from "../auth/User/User";
 import BackButton from "@/UI/BackButton";
 import { paymentAPI } from "@/services/apiPayment";
 import { useAuth } from "@/providers/AuthProvider";
-import LogIn from "../main/auth/user/SignedIn";
+import LogIn from "../auth/User/SignedIn";
 
 const Premium = () => {
   const navigate = useNavigate();

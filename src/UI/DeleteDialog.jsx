@@ -53,7 +53,7 @@ const DeleteDialog = ({ id, deleteAPI, title, type, isLoading }) => {
           <Button
             onClick={handleDelete}
             disabled={isLoading}
-            className="text-white hover:opacity-80 hover:bg-zinc-600 transition duration-200"
+            className="text-white bg-green-500 transition duration-200"
           >
             {isLoading ? "Deleting..." : title}
           </Button>

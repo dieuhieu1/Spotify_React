@@ -1,6 +1,6 @@
 import { buttonVariants } from "@/components/ui/button";
-import LogIn from "@/features/main/auth/user/SignedIn";
-import User from "@/features/main/auth/user/User";
+import LogIn from "@/features/auth/User/SignedIn";
+import User from "@/features/auth/User/User";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/providers/AuthProvider";
 import { useAuthStore } from "@/store/useAuthStore";

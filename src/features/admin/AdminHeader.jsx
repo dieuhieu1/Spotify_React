@@ -1,6 +1,6 @@
 import Logo from "@/UI/Logo";
 import { Link } from "react-router-dom";
-import User from "../main/auth/user/User";
+import User from "../auth/User/User";
 
 const AdminHeader = () => {
   return (

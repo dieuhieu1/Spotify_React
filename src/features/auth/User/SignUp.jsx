@@ -7,8 +7,8 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
 import Select from "react-select";
-import { countries, months } from "./StoreData";
-import InputForm from "./Input";
+import { countries, months } from "../../../store/StoreData";
+import InputForm from "../../../UI/Input";
 import { registerAPI } from "@/services/apiRegister";
 import { validateEmail } from "@/utils/validateEmail";
 import { useNavigate } from "react-router-dom";

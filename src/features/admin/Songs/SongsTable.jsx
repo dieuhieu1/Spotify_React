@@ -9,7 +9,7 @@ import {
 import { useMusicStore } from "@/store/useMusicStore";
 import { Calendar } from "lucide-react";
 import TableSkel from "../../../LoadingSkel/TableSkel";
-import UpdateSong from "../update-data/UpdateSong";
+import UpdateSong from "../Songs/UpdateSong";
 import DeleteDialog from "../../../UI/DeleteDialog";
 
 const SongsTable = () => {

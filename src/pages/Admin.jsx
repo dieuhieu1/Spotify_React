@@ -1,11 +1,8 @@
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import AdminHeader from "@/features/admin/AdminHeader";
-import DashboardStats from "@/features/admin/DashboardStats";
-import AlbumsTabContent from "@/features/admin/tab-content/AlbumsTabContent";
-import ArtitsTabContent from "@/features/admin/tab-content/ArtitsTabContent";
-import PlaylistsTabContent from "@/features/admin/tab-content/PlaylistsTabContent";
-import SongsTabContent from "@/features/admin/tab-content/SongsTabContent";
-import UsersTabContent from "@/features/admin/tab-content/UsersTabContent";
+import AlbumsTabContent from "@/features/admin/Albums/AlbumsTabContent";
+import SongsTabContent from "@/features/admin/Songs/SongsTabContent";
+import UsersTabContent from "@/features/admin/Users/UsersTabContent";
 import { useArtistsStore } from "@/store/useArtistsStore";
 import { useAuthStore } from "@/store/useAuthStore";
 import { useMusicStore } from "@/store/useMusicStore";
@@ -13,6 +10,9 @@ import { useUploadStore } from "@/store/useUploadStore";
 import { TabsContent } from "@radix-ui/react-tabs";
 import { Album, ListMusic, Music, SquareUserRound } from "lucide-react";
 import { useEffect } from "react";
+import DashboardStats from "@/features/admin/Stats/DashboardStats";
+import ArtistsTabContent from "@/features/admin/Artists/ArtitsTabContent";
+import PlaylistsTabContent from "@/features/admin/Playlists/PlaylistsTabContent";
 
 function Admin() {
   const { isAdmin, isLoading } = useAuthStore();
@@ -78,7 +78,7 @@ function Admin() {
           <AlbumsTabContent />
         </TabsContent>
         <TabsContent value="artists">
-          <ArtitsTabContent />
+          <ArtistsTabContent />
         </TabsContent>
         <TabsContent value="users">
           <UsersTabContent />

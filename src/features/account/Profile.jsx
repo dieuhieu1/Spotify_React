@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { months } from "../main/auth/StoreData";
+import { months } from "../../store/StoreData";
 import { useAuthStore } from "@/store/useAuthStore";
 import { validateEmail } from "@/utils/validateEmail";
 import BackButton from "@/UI/BackButton";

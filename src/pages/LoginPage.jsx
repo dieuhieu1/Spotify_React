@@ -1,5 +1,5 @@
-import Login from "@/features/main/auth/Login";
-import SignUp from "@/features/main/auth/SignUp";
+import Login from "@/features/auth/User/Login";
+import SignUp from "@/features/auth/User/SignUp";
 import { faQuoteLeft, faQuoteRight } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";

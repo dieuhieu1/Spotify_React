@@ -6,10 +6,10 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { MicVocal } from "lucide-react";
-import AddArtistDialog from "../add-data/AddArtistDialog";
-import ArtistsTable from "../data-table/ArtistsTable";
+import PlaylistTable from "./PlaylistsTable";
+import AddPlaylistDialog from "./AddPlaylistDialog";
 
-const ArtistsTabContent = () => {
+const PlaylistsTabContent = () => {
   return (
     <Card>
       <CardHeader>
@@ -17,18 +17,18 @@ const ArtistsTabContent = () => {
           <div>
             <CardTitle className="flex items-center gap-2">
               <MicVocal className="size-5 text-emerald-500" />
-              Artists Management
+              Playlists Management
             </CardTitle>
-            <CardDescription>Manage all your artists</CardDescription>
+            <CardDescription>Manage and Review all playlists</CardDescription>
           </div>
-          <AddArtistDialog className="text-white" />
+          <AddPlaylistDialog className="text-white" />
         </div>
       </CardHeader>
       <CardContent>
-        <ArtistsTable />
+        <PlaylistTable />
       </CardContent>
     </Card>
   );
 };
 
-export default ArtistsTabContent;
+export default PlaylistsTabContent;

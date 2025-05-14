@@ -1,3 +1,4 @@
+import { Button } from "@/components/ui/button";
 import {
   Table,
   TableBody,
@@ -6,18 +7,20 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { UserRoundCheck } from "lucide-react";
+import { useMusicStore } from "@/store/useMusicStore";
+import { Trash2, UserRoundCheck } from "lucide-react";
 import { useEffect } from "react";
 import TableSkel from "../../../LoadingSkel/TableSkel";
-import { useArtistsStore } from "@/store/useArtistsStore";
+import { usePlaylistStore } from "@/store/usePlaylistStore";
 import DeleteDialog from "@/UI/DeleteDialog";
-import UpdateArtist from "../update-data/UpdateArtist";
+import UpdatePlaylist from "./UpdatePlaylist";
 
-const ArtistsTable = () => {
-  const { artists, deleteArtist, fetchArtists, isLoading } = useArtistsStore();
+const PlaylistTable = () => {
+  const { playlists, deletePlaylist, fetchPlaylists, isLoading } =
+    usePlaylistStore();
   useEffect(() => {
-    fetchArtists(1, 10, "name", "asc");
-  }, [fetchArtists]);
+    fetchPlaylists(1, 10);
+  }, [fetchPlaylists]);
 
   if (isLoading) {
     return <TableSkel />;
@@ -28,32 +31,35 @@ const ArtistsTable = () => {
       <TableHeader>
         <TableRow className="hover:bg-zinc-800/50">
           <TableHead className="w-[50px]"></TableHead>
-          <TableHead>Artist Info</TableHead>
-          <TableHead>Artist&apos;s songs</TableHead>
+          <TableHead>Playlists Info</TableHead>
+          <TableHead>Playlists&apos;s songs</TableHead>
           <TableHead>Follower</TableHead>
+          <TableHead>Listner</TableHead>
+
           <TableHead className="text-right">Actions</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
-        {artists?.map((artist) => {
-          const artistName = artist?.name || "Unknown Artist"; // Default to "Unknown Title"
-          const follower = artist?.follower || "Unknown Date"; // Default to "Unknown Date"
-          const imageURL = artist?.imageURL || ""; // Fallback to an empty string if imageURL is not provided
-          const songs = artist?.songs || [];
+        {playlists?.map((playlist) => {
+          const playlistName = playlist.title || "Unknown playlist"; // Default to "Unknown Title"
+          const follower = playlist.follower || "Unknown Date"; // Default to "Unknown Date"
+          const imageURL = playlist.imageURL || ""; // Fallback to an empty string if imageURL is not provided
+          const songs = playlist.songs || [];
+          const listener = playlist.listener || 0;
           return (
-            <TableRow key={artist.id} className=" hover:bg-zinc-800/50 ">
+            <TableRow key={playlist.id} className="hover:bg-zinc-800/50">
               <TableCell>
                 {imageURL ? (
                   <img
                     src={imageURL}
-                    alt={artistName}
+                    alt={playlistName}
                     className="size-10 rounded object-cover"
                   />
                 ) : (
                   <div className="w-10 h-10 bg-zinc-800 rounded" /> // Placeholder if no image
                 )}
               </TableCell>
-              <TableCell>{artistName}</TableCell>
+              <TableCell>{playlistName}</TableCell>
               <TableCell className="font-medium">
                 {songs.length > 0 ? (
                   <div>
@@ -77,15 +83,23 @@ const ArtistsTable = () => {
                   {follower}
                 </span>
               </TableCell>
+              <TableCell>
+                <span className="inline-flex items-center gap-1 text-zinc-400">
+                  <UserRoundCheck className="h-4 w-4" />
+                  {listener}
+                </span>
+              </TableCell>
               <TableCell className="text-right">
-                <DeleteDialog
-                  id={artist.id}
-                  deleteAPI={deleteArtist}
-                  type={artist.name}
-                  isLoading={isLoading}
-                  title={"Delete Artist"}
-                />
-                <UpdateArtist artist={artist} />
+                <div className="flex gap-2 justify-end">
+                  <DeleteDialog
+                    id={playlist.id}
+                    deleteAPI={deletePlaylist}
+                    title={"Delete Playlist"}
+                    isLoading={isLoading}
+                    type={playlistName}
+                  />
+                  <UpdatePlaylist playlist={playlist} />
+                </div>
               </TableCell>
             </TableRow>
           );
@@ -95,4 +109,4 @@ const ArtistsTable = () => {
   );
 };
 
-export default ArtistsTable;
+export default PlaylistTable;

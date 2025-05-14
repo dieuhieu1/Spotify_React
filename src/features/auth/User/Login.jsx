@@ -3,7 +3,7 @@ import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
 import Select from "react-select";
-import { countries } from "./StoreData";
+import { countries } from "../../../store/StoreData";
 import { loginAPI } from "@/services/apiLogin.";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/providers/AuthProvider";

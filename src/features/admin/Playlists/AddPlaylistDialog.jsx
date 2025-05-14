@@ -11,13 +11,17 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { useMusicStore } from "@/store/useMusicStore";
-import { Plus, Upload } from "lucide-react";
-import { useRef, useState } from "react";
+import { Plus } from "lucide-react";
+import { useState } from "react";
 import toast from "react-hot-toast";
+import { usePlaylistStore } from "@/store/usePlaylistStore";
+import UploadImage from "../file-upload/UploadImage";
 
 const AddPlaylistDialog = () => {
-  const { addPlaylist, isLoading, songs } = useMusicStore();
+  const { addPlaylist, isLoading } = usePlaylistStore();
+  const { songs } = useMusicStore();
   const [playlistDialogOpen, setPlaylistDialogOpen] = useState(false);
+  const [image, setImage] = useState(false);
 
   const [newPlaylist, setNewPlaylist] = useState({
     title: "",
@@ -28,11 +32,6 @@ const AddPlaylistDialog = () => {
     songIds: [],
   });
 
-  const [files, setFiles] = useState({
-    image: null,
-  });
-
-  const imageInputRef = useRef(null);
   const clearData = () => {
     setNewPlaylist({
       title: "",
@@ -43,34 +42,20 @@ const AddPlaylistDialog = () => {
       songIds: [],
     });
 
-    setFiles({
-      image: null,
-    });
+    setImage(null);
   };
   const handleSongsChange = (selectedOptions) => {
     const songsArray = selectedOptions.map((option) => {
-      return option.label;
+      return option.id;
     });
-    setNewPlaylist({ ...newPlaylist, songs: songsArray });
+    setNewPlaylist({ ...newPlaylist, songIds: songsArray });
   };
   const handleSubmit = async () => {
-    if (!files.image) {
+    if (!image) {
       return toast.error("Please upload image files");
     }
-
-    const formData = new FormData();
-
-    formData.append("title", newPlaylist.title);
-    formData.append("description", newPlaylist.description);
-    formData.append("follower", newPlaylist.follower);
-    formData.append("listener", newPlaylist.listener);
-    formData.append("songs", newPlaylist.songs);
-    formData.append("image", files.image);
-    // Cách để log các cặp key-value trong formData
-    for (let [key, value] of formData.entries()) {
-      console.log(key, value); // In key và value của mỗi phần tử trong FormData
-    }
-    addPlaylist(formData);
+    newPlaylist.imageURL = image.url;
+    addPlaylist(newPlaylist);
     clearData();
     setPlaylistDialogOpen(false);
   };
@@ -93,56 +78,11 @@ const AddPlaylistDialog = () => {
         </DialogHeader>
 
         <div className="space-y-4 py-4">
-          <input
-            type="file"
-            ref={imageInputRef}
-            className="hidden text-white"
-            accept="image/*"
-            onChange={(e) => {
-              const file = e.target.files[0];
-              setFiles((prev) => ({ ...prev, image: file }));
-            }}
+          <UploadImage
+            image={image}
+            setImage={setImage}
+            nameField={"Playlist Image"}
           />
-
-          {/* Image upload area */}
-          <div
-            className="flex items-center justify-center p-6 border-2 border-dashed border-zinc-700 rounded-lg cursor-pointer"
-            onClick={() => imageInputRef.current?.click()}
-          >
-            <div className="text-center">
-              {files.image ? (
-                <div className="space-y-2">
-                  <div className="text-sm text-emerald-500">
-                    Image selected:
-                  </div>
-                  <div className="text-xs">{files.image.name.slice(0, 20)}</div>
-                  {/* Image Preview */}
-                  <div className="mt-2">
-                    <img
-                      src={URL.createObjectURL(files.image)} // Create a preview URL for the selected image
-                      alt="Artist Image Preview"
-                      className="w-32 h-32 object-cover rounded-md"
-                    />
-                  </div>
-                </div>
-              ) : (
-                <>
-                  <div className="p-3 bg-zinc-800 rounded-full inline-block mb-2">
-                    <Upload className="h-6 w-6 text-zinc-400" />
-                  </div>
-                  <div className="text-sm">Upload Artist Image</div>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="text-xs text-white"
-                  >
-                    Choose File
-                  </Button>
-                </>
-              )}
-            </div>
-          </div>
-
           {/* Other fields */}
           <div className="space-y-2">
             <label className="text-sm font-medium text-white">Title</label>

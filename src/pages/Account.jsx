@@ -1,4 +1,4 @@
-import User from "@/features/main/auth/user/User";
+import User from "@/features/auth/User/User";
 import { useAuth } from "@/providers/AuthProvider";
 import Logo from "@/UI/Logo";
 import { ChevronRight, Pencil, RotateCcw } from "lucide-react";

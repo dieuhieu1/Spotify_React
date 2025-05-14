@@ -14,7 +14,7 @@ import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import UploadSong from "../file-upload/UploadSong";
 import UploadImage from "../file-upload/UploadImage";
-import ArtistSelection from "../formData/ArtistSelection";
+import ArtistSelection from "../Artists/ArtistSelection";
 import { useUploadStore } from "@/store/useUploadStore";
 
 const UpdateSong = ({ song }) => {

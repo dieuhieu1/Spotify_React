@@ -13,13 +13,13 @@ import Track from "./features/main/track/Track";
 import Playlist from "./features/main/playlists/Playlist";
 import Artist from "./features/main/Artists/Artist";
 import PageNotFound from "./UI/PageNotFound";
-import LoginPage from "./pages/LoginPage";
 import { Toaster } from "react-hot-toast";
 import Premium from "./features/account/Premium";
 import Profile from "./features/account/Profile";
 import EmptyPlaylist from "./features/main/playlists/EmptyPlaylist";
-import ForgotPassword from "./features/forgot-password/ForgotPassword";
-import VerifyCodePage from "./features/forgot-password/VerifyCodePage";
+import ForgotPassword from "./features/auth/forgot-password/ForgotPassword";
+import VerifyCodePage from "./features/auth/forgot-password/VerifyCodePage";
+import LoginPage from "./pages/LoginPage";
 
 const router = createBrowserRouter([
   {

@@ -6,8 +6,8 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Music } from "lucide-react";
-import AddUserDialog from "../add-data/AddUserDialog";
-import UsersTable from "../data-table/UsersTable";
+import AddUserDialog from "./AddUserDialog";
+import UsersTable from "./UsersTable";
 
 const UsersTabContent = () => {
   return (
