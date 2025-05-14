@@ -50,7 +50,7 @@ const Login = ({ handleToggle }) => {
   };
   return (
     <form
-      className="h-full bg-[#267441] relative"
+      className="h-full bg-[#242424] relative"
       onSubmit={(e) => handleLogin(e)}
     >
       <div className=" flex justify-between items-center h-[10%] px-10 pt-14">
@@ -93,7 +93,7 @@ const Login = ({ handleToggle }) => {
         />
       </div>
 
-      <p className=" absolute text-7xl font-bold text-stone-900 top-[25%] left-[25%] cursor-pointer">
+      <p className=" absolute text-7xl font-bold text-stone-50 top-[25%] left-[25%] cursor-pointer">
         Hello, Mate!
       </p>
       <p className=" absolute text-2xl font-semibold text-stone-100 top-[37%] left-[20%] cursor-pointer">
@@ -123,7 +123,7 @@ const Login = ({ handleToggle }) => {
           </div>
 
           <p
-            className="absolute right-0 text-base font-medium hover:underline cursor-pointer"
+            className="absolute right-0 text-stone-50 font-medium hover:underline cursor-pointer"
             onClick={() => navigate("/forgot-password")}
           >
             Forgot Password?
@@ -134,15 +134,15 @@ const Login = ({ handleToggle }) => {
             </p>
           )}
         </div>
-        <Button className="text-stone-100 rounded-full mt-10 py-8 text-2xl font-bold">
+        <Button className="text-stone-800 bg-[#45b541] hover:bg-[#56cc55] rounded-full mt-10 py-8 text-2xl font-bold">
           Log In
         </Button>
         <div className="flex absolute top-[105%] right-[20%] ">
-          <p className="font-semibold text-stone-900 mr-2">
+          <p className="font-semibold text-stone-400 mr-2">
             Don&apos;t have an account?
           </p>
           <p
-            className="hover:underline cursor-pointer text-stone-100"
+            className="hover:underline cursor-pointer text-stone-50"
             onClick={() => handleToggle()}
           >
             Sign Up

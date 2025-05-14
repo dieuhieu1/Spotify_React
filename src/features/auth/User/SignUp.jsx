@@ -83,7 +83,7 @@ const SignUp = ({ handleToggle }) => {
     }
   };
   return (
-    <div className="h-full bg-[#7a1818] relative ">
+    <div className="h-full bg-[#242424] relative ">
       <div className=" flex justify-between items-center h-[10%] px-10 pt-14">
         <p
           className="font-bold text-4xl text-stone-50 cursor-pointer"
@@ -122,20 +122,20 @@ const SignUp = ({ handleToggle }) => {
         />
       </div>
 
-      <p className="absolute text-5xl font-bold text-stone-900 top-[15%] left-[12%] cursor-pointer">
+      <p className="absolute text-5xl font-bold text-stone-50 top-[15%] left-[12%] cursor-pointer">
         Create Your Account Today
       </p>
       <p className="absolute text-2xl font-semibold text-stone-100 top-[22%] left-[35%] cursor-pointer">
         Let the Music Move You!
       </p>
       {isRegister ? (
-        <div className="text-gray-800 text-center font-bold text-3xl mt-4 absolute top-[50%]">
+        <div className="text-gray-50 text-center font-bold text-3xl mt-4 absolute top-[50%]">
           <p className="w-6/7">
             🎉 Registration successful! Welcome to our platform. Please log in
             to start your journey. 🚀
           </p>
           <Button
-            className="text-stone-100 rounded-full mt-5 py-8 font-bold w-1/4"
+            className="text-stone-800 bg-[#45b541] hover:bg-[#56cc55] rounded-full mt-5 py-8 font-bold w-1/4"
             onClick={() => {
               handleToggle();
               setIsRegister((isRegister) => !isRegister);
@@ -164,7 +164,7 @@ const SignUp = ({ handleToggle }) => {
               type="text"
               id="name"
             />
-            <label htmlFor="date">Date Of Birth</label>
+            <label className="text-stone-50" htmlFor="date">Date Of Birth</label>
             <div className="flex gap-2">
               <input
                 id="date"
@@ -197,7 +197,7 @@ const SignUp = ({ handleToggle }) => {
               />
             </div>
             <div className="relative">
-              <label htmlFor="password">Password</label>
+              <label className="text-stone-50" htmlFor="password">Password</label>
               <input
                 type={isHidden ? "password" : "text"}
                 id="password"
@@ -215,11 +215,11 @@ const SignUp = ({ handleToggle }) => {
                 <p className="text-base font-medium ">{responeMes}</p>
               )}
             </div>
-            <Button className="text-stone-100 rounded-full mt-4 py-8 text-2xl font-bold">
+            <Button className="text-stone-800 bg-[#45b541] hover:bg-[#56cc55] rounded-full mt-4 py-8 text-2xl font-bold">
               Sign Up
             </Button>
             <div className="flex absolute top-[104%]  w-full left-[13%]">
-              <p className="font-semibold text-stone-900 mr-2">
+              <p className="font-semibold text-stone-400 mr-2">
                 Already have an account?
               </p>
               <p
