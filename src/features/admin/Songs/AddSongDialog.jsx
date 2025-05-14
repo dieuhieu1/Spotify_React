@@ -56,6 +56,7 @@ const AddSongDialog = () => {
       return toast.error("Please upload both audio and image files");
     }
     newSong.imageURL = image.url;
+    newSong.duration = Math.floor(audio.duration);
     newSong.fileSongURL = audio.url;
     addSong(newSong);
     clearData();
@@ -71,7 +72,7 @@ const AddSongDialog = () => {
         </Button>
       </DialogTrigger>
 
-      <DialogContent className="bg-zinc-900 border-zinc-700 max-h-[90vh] overflow-auto text-white">
+      <DialogContent className="bg-zinc-900 border-zinc-700 max-h-[95vh] max-w-[60vh] overflow-auto text-white">
         <DialogHeader>
           <DialogTitle>Add New Song</DialogTitle>
           <DialogDescription>
@@ -110,8 +111,7 @@ const AddSongDialog = () => {
             </label>
             <Input
               type="number"
-              min="0"
-              value={newSong.duration}
+              value={Math.floor(audio?.duration) || 0}
               onChange={(e) =>
                 setNewSong({ ...newSong, duration: e.target.value || "0" })
               }

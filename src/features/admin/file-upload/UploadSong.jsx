@@ -21,6 +21,7 @@ const UploadSong = ({ audio, setAudio }) => {
       toast.error("Failed to upload song");
     }
   };
+
   const handleDeleteSong = async () => {
     if (!audio) {
       return toast.error("No file existed for delete");
@@ -32,11 +33,19 @@ const UploadSong = ({ audio, setAudio }) => {
     if (result) {
       toast.success("Song deleted successfully");
     } else {
-      toast.error("Failed to delet song");
+      toast.error("Failed to delete song");
     }
   };
 
   if (isUploading) return;
+
+  const getFileName = (fileName) => {
+    if (fileName && fileName.length > 20) {
+      return fileName.slice(0, 50) + "..."; // Cắt 20 ký tự đầu và thêm "..."
+    }
+    return fileName; // Nếu tên file ngắn hơn 20 ký tự, giữ nguyên
+  };
+
   return (
     /* Audio upload */
     <div className="space-y-2">
@@ -63,7 +72,7 @@ const UploadSong = ({ audio, setAudio }) => {
           onClick={() => audioInputRef.current?.click()}
           className="w-full text-white hover:opacity-80 hover:bg-zinc-600 transition duration-200"
         >
-          {audio ? audio?.fileName : "Choose Audio File"}
+          {audio ? getFileName(audio?.fileName) : "Choose Audio File"}
         </Button>
 
         {audio && (

@@ -5,7 +5,15 @@ import { useMusicStore } from "@/store/useMusicStore";
 import { usePlayerStore } from "@/store/usePlayerStore";
 import { usePlaylistStore } from "@/store/usePlaylistStore";
 import { formatDuration, timeCalculator } from "@/utils/formatDuration";
-import { Check, Clock, Pause, Play, PlusCircleIcon } from "lucide-react";
+import {
+  Check,
+  Clock,
+  Ellipsis,
+  Pause,
+  Play,
+  PlusCircleIcon,
+  X,
+} from "lucide-react";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import SongSearch from "../search/SongSearch";
@@ -132,13 +140,14 @@ function Playlist() {
             ) : (
               <div className="bg-black/20 backdrop-blur-sm">
                 {/* Table Header */}
-                <div className="grid grid-cols-[16px_4fr_2fr_1fr] gap-4 px-10 py-2 text-sm text-zinc-400 border-b border-white/5">
+                <div className="grid grid-cols-[16px_4fr_2fr_1fr_0.25fr] gap-4 px-10 py-2 text-sm text-zinc-400 border-b border-white/5">
                   <div>#</div>
                   <div>Title</div>
                   <div>Released Date</div>
                   <div>
                     <Clock className="h-4 w-4" />
                   </div>
+                  <div></div>
                 </div>
 
                 {/* Songs List */}
@@ -149,23 +158,25 @@ function Playlist() {
 
                       return (
                         <div
-                          onClick={() => handlePlaySong(index)}
                           key={song.id}
-                          className={`grid grid-cols-[16px_4fr_2fr_1fr] gap-4 px-4 py-2 text-sm text-zinc-400 hover:bg-white/5 rounded-md group cursor-pointer`}
+                          className={`grid grid-cols-[16px_4fr_2fr_1fr_0.25fr] gap-4 px-4 py-2 text-sm text-zinc-400 hover:bg-white/5 rounded-md group cursor-pointer`}
                         >
-                          <div className="flex items-center justify-center">
+                          <div
+                            className="flex items-center justify-center"
+                            onClick={() => handlePlaySong(index)}
+                          >
                             {isCurrentSong && isPlaying ? (
                               <div className="size-4 text-green-500">♫</div>
                             ) : (
-                              <span className="group-hover:hidden">
-                                {index + 1}
+                              <span className="group-hover">
+                                <Pause />
                               </span>
                             )}
                             {!isCurrentSong && (
                               <Play className="h-4 w-4 hidden group-hover:block" />
                             )}
                           </div>
-                          <div className="flex items-center gap-3 ">
+                          <div className="flex items-center gap-2 ">
                             <img
                               src={
                                 song.imageURL ||
@@ -190,6 +201,11 @@ function Playlist() {
                           </div>
                           <div className="flex items-center">
                             {formatDuration(song.duration)}
+                          </div>
+                          <div>
+                            <Button>
+                              <X />
+                            </Button>
                           </div>
                         </div>
                       );
