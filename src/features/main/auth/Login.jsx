@@ -7,12 +7,11 @@ import { countries } from "./StoreData";
 import { loginAPI } from "@/services/apiLogin.";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/providers/AuthProvider";
-import { getToken } from "@/utils/getToken";
 
 const Login = ({ handleToggle }) => {
   const navigate = useNavigate();
   const { setIsLogin, setToken } = useAuth();
-  const [isHidden, setIsHidden] = useState(false);
+  const [isHidden, setIsHidden] = useState(true);
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -31,20 +30,27 @@ const Login = ({ handleToggle }) => {
       if (!login) {
         return;
       }
-      navigate(`/?access_token=${login.result.token}`);
-      const token = getToken();
-      console.log(token);
+      const { result } = login;
+      // Get Token from URL
+      const token = result.accessToken;
+
+      // Save to Session Storage
       sessionStorage.setItem("authToken", token);
+
+      // Save Token to the Auth Provider
       setToken(token);
       setIsLogin(true);
-      // Bạn có thể xử lý dữ liệu trả về ở đây (ví dụ: lưu token và chuyển hướng)
+
+      // Navigate to Home Page
+      navigate("/");
     } catch (error) {
-      setFailResponse(error.message); // Hiển thị thông báo lỗi từ service
+      const message = error.response?.data?.message || "Đăng nhập thất bại!";
+      setFailResponse(message);
     }
   };
   return (
     <form
-      className="h-full bg-red-300 relative"
+      className="h-full bg-[#267441] relative"
       onSubmit={(e) => handleLogin(e)}
     >
       <div className=" flex justify-between items-center h-[10%] px-10 pt-14">
@@ -116,7 +122,10 @@ const Login = ({ handleToggle }) => {
             />
           </div>
 
-          <p className="absolute right-0 text-base font-medium hover:underline cursor-pointer">
+          <p
+            className="absolute right-0 text-base font-medium hover:underline cursor-pointer"
+            onClick={() => navigate("/forgot-password")}
+          >
             Forgot Password?
           </p>
           {failResponse && (

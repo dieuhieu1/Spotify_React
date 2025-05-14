@@ -1,8 +1,6 @@
 import { axiosInstance } from "@/lib/axios";
-import { getUserInfo } from "@/services/apiUserInfo";
 import { useAuthStore } from "@/store/useAuthStore";
 import Spinner from "@/UI/Spinner";
-import { getToken } from "@/utils/getToken";
 import { createContext, useContext, useEffect, useState } from "react";
 
 const updateApiToken = (token) => {
@@ -10,7 +8,7 @@ const updateApiToken = (token) => {
   if (token) {
     axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
   } else {
-    delete axiosInstance.defaults.headers.common["Authoriztion"];
+    delete axiosInstance.defaults.headers.common["Authorization"];
   }
 };
 
@@ -23,19 +21,24 @@ const AuthProvider = ({ children }) => {
 
   const [token, setToken] = useState("");
   const { checkAdminStatus } = useAuthStore();
+
+  useEffect(() => {
+    checkAdminStatus();
+    updateApiToken(token);
+  }, [checkAdminStatus, token]);
+
   useEffect(() => {
     const initAuth = () => {
       try {
-        if (!token) {
-          setToken(sessionStorage.getItem("authToken"));
-        }
-        updateApiToken(token);
-        if (token) {
+        let savedToken = sessionStorage.getItem("authToken");
+        if (savedToken) {
+          setToken(savedToken);
           setIsLogin(true);
           checkAdminStatus();
+        } else {
+          updateApiToken(null);
         }
       } catch (error) {
-        updateApiToken(null);
         console.log("Error in auth ", error);
       } finally {
         setLoading(false);
@@ -43,7 +46,7 @@ const AuthProvider = ({ children }) => {
     };
 
     initAuth();
-  }, [checkAdminStatus, token]);
+  }, [checkAdminStatus]);
   if (loading) {
     return (
       <div className="h-screen w-full items-center flex justify-center">

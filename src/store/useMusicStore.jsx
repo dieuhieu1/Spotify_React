@@ -3,15 +3,12 @@ import toast from "react-hot-toast";
 import { create } from "zustand";
 
 export const useMusicStore = create((set) => ({
-  users: [],
   albums: [],
   songs: [],
   playlists: [],
   current: {},
-  artists: [],
   genres: [],
   suggestSongs: [],
-  currentArtist: [],
   isLoading: false,
   isMainLoading: false,
   error: null,
@@ -22,7 +19,6 @@ export const useMusicStore = create((set) => ({
     totalArtists: 0,
     totalAlbums: 0,
   },
-  featuresPlaylists: [],
   trendingSongs: [],
   savedPlaylists: [],
   // isSongsLoading: false,
@@ -44,10 +40,10 @@ export const useMusicStore = create((set) => ({
   fetchSavedPlaylists: async () => {
     set({ isMainLoading: true, error: null });
     try {
-      const response = await axiosInstance.get("/user/saved-playlists");
+      const response = await axiosInstance.get("/users/saved-playlists");
       console.log(response.data);
       set({
-        savedPlaylists: response.data.result,
+        savedPlaylists: response.data.result.items,
       });
     } catch (error) {
       set({ error: error.message });
@@ -59,7 +55,7 @@ export const useMusicStore = create((set) => ({
     set({ isMainLoading: true, error: null });
     try {
       const response = await axiosInstance.get(
-        "/songs/sorted-by-viewer?pageNo=1&pageSize=6&viewerSortOrder=desc"
+        "/songs?pageNo=1&pageSize=7&viewerSortOrder=desc"
       );
       set({ trendingSongs: response.data.result.items });
     } catch (error) {
@@ -69,19 +65,7 @@ export const useMusicStore = create((set) => ({
     }
   },
   fetchMadeForYouSongs: async () => {},
-  fetchFeaturedPlaylists: async () => {
-    set({ isMainLoading: true, error: null });
-    try {
-      const response = await axiosInstance.get(
-        "/playlists/sorted-by-viewer?pageNo=1&pageSize=6&viewerSortOrder=desc"
-      );
-      set({ featuresPlaylists: response.data.result.items });
-    } catch (error) {
-      set({ error: error.message });
-    } finally {
-      set({ isMainLoading: false });
-    }
-  },
+
   //set Current
   setCurrent: (element) => {
     set({ current: element });
@@ -115,7 +99,7 @@ export const useMusicStore = create((set) => ({
   fetchSongById: async (songId) => {
     set({ isLoading: true, error: null });
     try {
-      const response = await axiosInstance.get(`/song/${songId}`);
+      const response = await axiosInstance.get(`/songs/${songId}`);
       set({ current: response.data.result });
     } catch (error) {
       set({ error: error.message });
@@ -126,7 +110,7 @@ export const useMusicStore = create((set) => ({
   deleteSong: async (id) => {
     set({ isLoading: true, error: null });
     try {
-      const response = await axiosInstance.delete(`/song/${id}`);
+      const response = await axiosInstance.delete(`/songs/${id}`);
       set((state) => ({
         songs: state.songs.filter((song) => song.id !== id),
       }));
@@ -139,12 +123,13 @@ export const useMusicStore = create((set) => ({
       set({ isLoading: false });
     }
   },
-  addSong: async (formData) => {
+  addSong: async (songData) => {
     set({ isLoading: true, error: null });
     try {
-      const response = await axiosInstance.post("/song", formData, {
+      console.log(songData);
+      const response = await axiosInstance.post("/songs", songData, {
         headers: {
-          "Content-Type": "multipart/form-data",
+          "Content-Type": "application/json",
         },
       });
       set((state) => ({ songs: [...state.songs, response.data.result] }));
@@ -157,63 +142,27 @@ export const useMusicStore = create((set) => ({
       set({ isLoading: false });
     }
   },
-  // Artists in DashBoard
-  fetchArtists: async (startPage, sizeOfPage) => {
-    set({ isLoading: false, error: null });
-    try {
-      const response = await axiosInstance.get(
-        `artists?pageNo=${startPage}&pageSize=${sizeOfPage}&nameSortOrder=asc`
-      );
-
-      set({ artists: response.data.result.items });
-    } catch (error) {
-      console.log(error.message);
-    } finally {
-      set({ isLoading: false });
-    }
-  },
-  fetchArtistById: async (artistId) => {
-    set({ isLoading: false, error: null });
-    try {
-      const response = await axiosInstance.get(`/artist/${artistId}`);
-
-      set({ currentArtist: response.data.result });
-    } catch (error) {
-      console.log(error.message);
-    } finally {
-      set({ isLoading: false });
-    }
-  },
-  addArtist: async (formData) => {
+  updateSong: async (id, songData) => {
     set({ isLoading: true, error: null });
     try {
-      const response = await axiosInstance.post("/artist", formData, {
+      const response = await axiosInstance.put(`/songs/${id}`, songData, {
         headers: {
-          "Content-Type": "multipart/form-data",
+          "Content-Type": "application/json",
         },
       });
-      set((state) => ({ artists: [...state.artists, response.data.result] }));
 
-      toast.success("Artist deleted successfully!");
+      // Cập nhật bài hát trong mảng 'songs'
+      set((state) => {
+        const updatedSongs = state.songs.map((song) =>
+          song.id === id ? { ...song, ...response.data.result } : song
+        );
+        return { songs: updatedSongs }; // Trả về mảng 'songs' đã cập nhật
+      });
+
+      toast.success("Song updated successfully!");
     } catch (error) {
       console.log(error);
-      toast.error("Error deleting song");
-    } finally {
-      set({ isLoading: false });
-    }
-  },
-  deleteArtists: async (artistId) => {
-    set({ isLoading: true, error: null });
-    try {
-      const response = await axiosInstance.delete(`/artist/${artistId}`);
-      set((state) => ({
-        artists: state.artists.filter((artist) => artist.id !== artistId),
-      }));
-      toast.success("Song deleted successfully!");
-    } catch (error) {
-      console.log(error);
-
-      toast.error("Error deleting song");
+      toast.error("Error updating song");
     } finally {
       set({ isLoading: false });
     }
@@ -237,7 +186,7 @@ export const useMusicStore = create((set) => ({
   addAlbum: async (formData) => {
     set({ isLoading: true, error: null });
     try {
-      const response = await axiosInstance.post("/album", formData, {
+      const response = await axiosInstance.post("/albums", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -255,144 +204,15 @@ export const useMusicStore = create((set) => ({
   deleteAlbum: async (albumId) => {
     set({ isLoading: true, error: null });
     try {
-      const response = await axiosInstance.delete(`/artist/${albumId}`);
+      const response = await axiosInstance.delete(`/albums/${albumId}`);
       set((state) => ({
-        albums: state.albums.filter((artist) => album.id !== albumId),
+        albums: state.albums.filter((album) => album.id !== albumId),
       }));
       toast.success("Album deleted successfully!");
     } catch (error) {
       console.log(error);
 
       toast.error("Error deleting song");
-    } finally {
-      set({ isLoading: false });
-    }
-  },
-
-  // Playlists in DashBoard
-  fetchPlaylists: async (startPage, sizeOfPage) => {
-    // Data fetch logic...
-    set({ isLoading: true, error: null });
-    try {
-      const response = await axiosInstance.get(
-        `/playlists?pageNo=${startPage}&pageSize=${sizeOfPage}&titleSortOrder=asc`
-      );
-
-      set({ playlists: response.data.result.items });
-    } catch (error) {
-      set({ error: error.response });
-    } finally {
-      set({ isLoading: false });
-    }
-  },
-  fetchPlaylistById: async (id) => {
-    set({ isMainLoading: true, error: null });
-    try {
-      const response = await axiosInstance.get(`/playlist/${id}`);
-      set({ current: response.data.result });
-    } catch (error) {
-      set({ error: error.response });
-    } finally {
-      set({ isMainLoading: false });
-    }
-  },
-  addPlaylist: async (formData) => {
-    set({ isLoading: true, error: null });
-    try {
-      const response = await axiosInstance.post("/playlist", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
-      set((state) => ({
-        playlists: [...state.playlists, response.data.result],
-      }));
-
-      toast.success("Playlist created successfully!");
-    } catch (error) {
-      console.log(error);
-      toast.error("Error deleting song");
-    } finally {
-      set({ isLoading: false });
-    }
-  },
-  deletePlaylist: async (playlistId) => {
-    set({ isLoading: true, error: null });
-    try {
-      const response = await axiosInstance.delete(`/playlist/${playlistId}`);
-      set((state) => ({
-        playlists: state.playlists.filter(
-          (playlist) => playlist.id !== playlistId
-        ),
-      }));
-      toast.success("Playlist deleted successfully!");
-    } catch (error) {
-      console.log(error);
-
-      toast.error("Error deleting playlist");
-    } finally {
-      set({ isLoading: false });
-    }
-  },
-
-  // Users in Dashboard
-  fetchUsers: async (startPage, sizeOfPage) => {
-    // Data fetch logic...
-    set({ isLoading: true, error: null });
-    try {
-      const response = await axiosInstance.get(
-        `/users?pageNo=${startPage}&pageSize=${sizeOfPage}&nameSortOrder=asc`
-      );
-
-      set({ users: response.data.result.items });
-    } catch (error) {
-      set({ error: error.response });
-    } finally {
-      set({ isLoading: false });
-    }
-  },
-  // fetchUsersById: async (userId) => {
-  //   set({ isLoading: true, error: null });
-  //   try {
-  //     const response = await axiosInstance.get(`/user/${userId}`);
-  //     set({ user: response.data.result });
-  //   } catch (error) {
-  //     set({ error: error.response });
-  //   } finally {
-  //     set({ isLoading: false });
-  //   }
-  // },
-  addUser: async (formData) => {
-    set({ isLoading: true, error: null });
-    try {
-      const response = await axiosInstance.post("/user", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
-      set((state) => ({
-        users: [...state.users, response.data.result],
-      }));
-
-      toast.success("Users created successfully!");
-    } catch (error) {
-      console.log(error);
-      toast.error("Error creating user");
-    } finally {
-      set({ isLoading: false });
-    }
-  },
-  deleteUser: async (userId) => {
-    set({ isLoading: true, error: null });
-    try {
-      const response = await axiosInstance.delete(`/user/${userId}`);
-      set((state) => ({
-        users: state.users.filter((user) => user.id !== userId),
-      }));
-      toast.success("User deleted successfully!");
-    } catch (error) {
-      console.log(error);
-      toast.error("Error deleting user");
     } finally {
       set({ isLoading: false });
     }

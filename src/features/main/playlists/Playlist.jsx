@@ -3,6 +3,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import MainPlaylistSkeleton from "@/LoadingSkel/MainPlaylistSkeleton";
 import { useMusicStore } from "@/store/useMusicStore";
 import { usePlayerStore } from "@/store/usePlayerStore";
+import { usePlaylistStore } from "@/store/usePlaylistStore";
 import { formatDuration, timeCalculator } from "@/utils/formatDuration";
 import { Check, Clock, Pause, Play, PlusCircleIcon } from "lucide-react";
 import { useEffect } from "react";
@@ -10,7 +11,9 @@ import { useParams } from "react-router-dom";
 
 function Playlist() {
   const { playlistId } = useParams();
-  const { fetchPlaylistById, isMainLoading, current } = useMusicStore();
+  const { isMainLoading } = useMusicStore();
+  const { currentPlaylist } = usePlaylistStore();
+  const { fetchPlaylistById } = usePlaylistStore();
   const { currentSong, isPlaying, playPlaylist, togglePlay } = usePlayerStore();
   useEffect(() => {
     if (playlistId) {
@@ -18,24 +21,23 @@ function Playlist() {
     }
   }, [fetchPlaylistById, playlistId]);
   const handlePlayPlaylist = () => {
-    if (!current) return;
-
+    if (!currentPlaylist) return;
     // Neu tim thay bai hat trong album thi choi tiep
     // Khong thi choi lai tu dau
-    const isCurrentPlaylistPlaying = current?.songs.some(
+    const isCurrentPlaylistPlaying = currentPlaylist?.songs.some(
       (song) => song?.id === currentSong?.id
     );
 
     if (isCurrentPlaylistPlaying) {
       togglePlay();
     } else {
-      playPlaylist(current?.songs, 0);
+      playPlaylist(currentPlaylist?.songs, 0);
     }
   };
 
   const handlePlaySong = (index) => {
-    if (!current) return;
-    playPlaylist(current?.songs, index);
+    if (!currentPlaylist) return;
+    playPlaylist(currentPlaylist?.songs, index);
   };
   // if (isLoading) return null;
   if (isMainLoading) {
@@ -55,7 +57,7 @@ function Playlist() {
               <div className="flex p-6 gap-6 pb-8">
                 <img
                   src={
-                    current?.imageURL ||
+                    currentPlaylist?.imageURL ||
                     "https://discussions.apple.com/content/attachment/592590040"
                   }
                   alt=""
@@ -63,13 +65,15 @@ function Playlist() {
                 />
                 <div className="flex flex-col justify-end">
                   <p className="text-sm font-medium">Playlist</p>
-                  <h1 className="text-7xl font-bold my-4">{current?.title}</h1>
+                  <h1 className="text-7xl font-bold my-4">
+                    {currentPlaylist?.title}
+                  </h1>
                   <div className="flex items-center gap-2 text-sm text-zinc-100">
                     <span className="font-medium text-white">
-                      • {current?.creator}
+                      • {currentPlaylist?.creator}
                     </span>
-                    <span>• {current?.songs?.length} Songs</span>
-                    <span>• {timeCalculator(current?.totalHours)}</span>
+                    <span>• {currentPlaylist?.songs?.length} Songs</span>
+                    <span>• {timeCalculator(currentPlaylist?.totalHours)}</span>
                   </div>
                 </div>
               </div>
@@ -82,7 +86,9 @@ function Playlist() {
                 className="w-14 h-14 rounded-full bg-green-500 hover:bg-green-400 hover:scale-105 transition-all"
               >
                 {isPlaying &&
-                current?.songs.some((song) => song?.id === currentSong?.id) ? (
+                currentPlaylist?.songs.some(
+                  (song) => song?.id === currentSong?.id
+                ) ? (
                   <Pause className="h-7 w-7 text-black" />
                 ) : (
                   <Play className="h-7 w-7 text-black" />
@@ -115,7 +121,7 @@ function Playlist() {
               {/* Songs List */}
               <div className="px-6">
                 <div className="space-y-2 py-4">
-                  {current?.songs?.map((song, index) => {
+                  {currentPlaylist?.songs?.map((song, index) => {
                     const isCurrentSong = currentSong?.id === song.id;
 
                     return (

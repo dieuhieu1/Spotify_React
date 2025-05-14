@@ -5,19 +5,19 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
 ("../assets/client-assets/img/ai-generated-8885446_1920.jpg");
 function LoginPage() {
-  const [isLogin, setIsLogin] = useState(true);
+  const [isSignUp, setIsLogin] = useState(true);
   const handleToggle = () => {
-    setIsLogin((isLogin) => !isLogin);
+    setIsLogin((isSignUp) => !isSignUp);
   };
   return (
-    <div className="w-full h-screen bg-slate- items-center flex justify-center bg-zinc-300">
+    <div className="w-full h-screen items-center flex justify-center bg-[#121212]">
       <div className=" flex w-[calc(100vw-300px)] h-[calc(100vh-200px)] rounded-3xl overflow-hidden ">
         <div
           className={`w-1/2 transition-transform duration-1000 ${
-            isLogin ? "translate-x-0" : "translate-x-[100%]"
+            isSignUp ? "translate-x-0" : "translate-x-[100%]"
           }`}
         >
-          {isLogin ? (
+          {isSignUp ? (
             <Login handleToggle={handleToggle} />
           ) : (
             <SignUp handleToggle={handleToggle} />
@@ -26,7 +26,7 @@ function LoginPage() {
         <div className="w-1/2 ">
           <div
             className={`bg-loginImg bg-cover  h-full bg-no-repeat bg-center text-5xl font-bold text-white relative px-4  transition-transform duration-1000  ${
-              isLogin ? "translate-x-0" : "translate-x-[-100%]"
+              isSignUp ? "translate-x-0" : "translate-x-[-100%]"
             }`}
           >
             <div className="absolute top-[5%] left-[20%] ">

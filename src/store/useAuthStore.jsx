@@ -1,5 +1,4 @@
 import { axiosInstance } from "@/lib/axios";
-
 import { create } from "zustand";
 
 export const useAuthStore = create((set) => ({
@@ -7,19 +6,90 @@ export const useAuthStore = create((set) => ({
   isLoading: false,
   error: null,
   user: null,
+  email: "",
+  forgotPasswordToken: "",
   checkAdminStatus: async () => {
     set({ isLoading: true, error: null });
+
     try {
-      const response = await axiosInstance.get("/auth/myInfo");
-      set({ user: response.data.result });
-      if (response.data.result.roles[0].description === "Admin Role") {
-        set({ isAdmin: true });
+      const token = sessionStorage.getItem("authToken");
+      if (token) {
+        axiosInstance.defaults.headers.common[
+          "Authorization"
+        ] = `Bearer ${token}`;
       }
+
+      const response = await axiosInstance.get("/auth/myInfo");
+      const userData = response.data.result;
+
+      const isAdmin = userData.roles?.some(
+        (role) => role.description === "Admin Role"
+      );
+      set({
+        user: userData,
+        isAdmin: isAdmin || false,
+      });
     } catch (error) {
-      set({ isAdmin: false, error: error.response });
+      set({
+        isAdmin: false,
+        error: error.data.message || error,
+      });
     } finally {
       set({ isLoading: false });
     }
   },
-  reset: () => {},
+  forgotPassword: async (email) => {
+    try {
+      set({ isLoading: true });
+      const response = await axiosInstance.post(
+        "/auth/forgot-password",
+        email,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      console.log(response);
+      set({ email: response.data.result.email });
+      set({ isLoading: false });
+    } catch (error) {
+      set({
+        error: error.response || error,
+      });
+    } finally {
+      set({ isLoading: false });
+    }
+  },
+  verifyCode: async (verificationData) => {
+    try {
+      set({ isLoading: true });
+      const response = await axiosInstance.post(
+        "/auth/forgot-password/verify-code",
+        verificationData,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      set({
+        isLoading: false,
+        forgotPasswordToken: response.data.result.forgotPassword,
+      });
+    } catch (error) {
+      set({
+        error: error.response || error,
+      });
+    } finally {
+      set({ isLoading: false });
+    }
+  },
+  reset: () =>
+    set({
+      isAdmin: false,
+      isLoading: false,
+      error: null,
+      user: null,
+    }),
 }));

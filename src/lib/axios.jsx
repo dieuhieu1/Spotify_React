@@ -1,7 +1,7 @@
 import axios from "axios";
 
 export const axiosInstance = axios.create({
-  baseURL: "http://localhost:8080/spotify/v1",
+  baseURL: "http://localhost:8080/mymusic/v1",
 });
 // Add a request interceptor
 axios.interceptors.request.use(

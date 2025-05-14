@@ -18,6 +18,8 @@ import { Toaster } from "react-hot-toast";
 import Premium from "./features/account/Premium";
 import Profile from "./features/account/Profile";
 import EmptyPlaylist from "./features/main/playlists/EmptyPlaylist";
+import ForgotPassword from "./features/forgot-password/ForgotPassword";
+import VerifyCodePage from "./features/forgot-password/VerifyCodePage";
 
 const router = createBrowserRouter([
   {
@@ -39,6 +41,16 @@ const router = createBrowserRouter([
   {
     path: "/login",
     element: <LoginPage />,
+    errorElement: <PageNotFound />,
+  },
+  {
+    path: "/forgot-password",
+    element: <ForgotPassword />,
+    errorElement: <PageNotFound />,
+  },
+  {
+    path: "/verify",
+    element: <VerifyCodePage />,
     errorElement: <PageNotFound />,
   },
   {

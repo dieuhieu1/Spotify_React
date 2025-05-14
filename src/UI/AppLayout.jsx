@@ -47,7 +47,7 @@ function AppLayout() {
       {isLogin ? (
         <PlaybackControls />
       ) : (
-        <div className="flex items-center justify-between p-4 rounded-lg bg-gradient-to-r from-purple-600 to-blue-500 text-white">
+        <div className=" ml-2 mr-[15px] mb-3 flex items-center justify-between p-4 rounded-lg bg-gradient-to-r from-purple-600 to-blue-500 text-white">
           {/* Nội dung bên trái */}
           <div>
             <h2 className="font-bold text-sm">Xem trước MyMusic</h2>

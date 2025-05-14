@@ -1,48 +1,62 @@
-import { formatTime } from "@/features/player/PlaybackControls";
-import { useAuth } from "@/providers/AuthProvider";
+import { useState, useEffect } from "react";
+import { useMusicStore } from "@/store/useMusicStore";
 import { useAuthStore } from "@/store/useAuthStore";
-import { useSearchStore } from "@/store/useSearchStore";
-import { useEffect, useState } from "react";
+import { formatTime } from "@/features/player/PlaybackControls";
+
 import EditPlaylistModal from "./EditPlaylistModal ";
-import { createPlaylist, updatePlaylist } from "@/services/apiPlaylist";
-import { getUserInfo } from "@/services/apiUserInfo";
+import { usePlaylistStore } from "@/store/usePlaylistStore";
+import toast from "react-hot-toast";
 
 const EmptyPlaylist = () => {
   const { user } = useAuthStore();
-  const [songsAdd, setSongsAdd] = useState([]);
+  const { trendingSongs } = useMusicStore();
+  const { addPlaylist } = usePlaylistStore();
+
+  const [songIds, setSongIds] = useState([]);
   const [showModal, setShowModal] = useState(false);
-  const { findSongs, songs } = useSearchStore();
-  const [description, setDescription] = useState("");
   const [query, setQuery] = useState("");
-  const [title, setTitle] = useState("Danh sách phát của tôi");
-  const [files, setFiles] = useState({
-    image: null,
+  const [filteredSongs, setFilteredSongs] = useState(trendingSongs);
+  const [file, setFile] = useState(null);
+  const [playlist, setPlaylist] = useState({
+    title: "Danh sách phát của tôi",
+    description: "",
+    imageURL: "",
+    songIds: [],
   });
 
   const handleCreate = async () => {
-    const formData = new FormData();
-    formData.append("title", title);
-    formData.append("songs", songsAdd);
-    formData.append("image", files.image);
-    formData.append("creator", user.name);
-    console.log(user?.createdPlaylists);
+    if (file) {
+      playlist.imageURL = file.url;
+    }
+    console.log(playlist);
+    const result = await addPlaylist(playlist);
+    if (result) {
+      toast.success("Playlist created successfully");
+    } else {
+      toast.error("Failed to create song");
+    }
+  };
 
-    const res = await createPlaylist(formData);
+  const handleAdd = (songId) => {
+    console.log(songId);
+    if (!songIds.includes(songId)) {
+      const selectedSongs = [...songIds, songId];
+      setSongIds(selectedSongs);
+      setPlaylist({ ...playlist, songIds: selectedSongs });
+    }
   };
-  const handleAdd = (name) => {
-    setSongsAdd((prev) => [...prev, name]);
-    console.log(songsAdd);
-  };
+
+  // Hàm lọc bài hát khi người dùng thay đổi query
   useEffect(() => {
     if (query.trim()) {
-      const timer = setTimeout(() => {
-        findSongs(query);
-      }, 500); // Debounce 500ms
-      return () => clearTimeout(timer); // Clear timeout nếu query thay đổi trước khi timeout
+      const filtered = trendingSongs.filter((song) =>
+        song?.name.toLowerCase().includes(query.toLowerCase())
+      );
+      setFilteredSongs(filtered);
     } else {
-      findSongs("");
+      setFilteredSongs(trendingSongs);
     }
-  }, [query]);
+  }, [query, trendingSongs]);
 
   return (
     <div className="bg-zinc-900 text-white min-h-screen">
@@ -53,9 +67,9 @@ const EmptyPlaylist = () => {
           onClick={() => setShowModal(true)}
         >
           {/* Placeholder cho hình ảnh playlist */}
-          {files?.image ? (
+          {file ? (
             <img
-              src={files?.image}
+              src={file?.url}
               alt=""
               className="w-full h-full object-cover rounded-md"
             />
@@ -71,7 +85,7 @@ const EmptyPlaylist = () => {
             className="text-6xl font-bold mb-2 hover:underline cursor-pointer"
             onClick={() => setShowModal(true)}
           >
-            {title}
+            {playlist.title}
           </h1>
           <p className="text-gray-400">{user?.name} •</p>
         </div>
@@ -93,8 +107,8 @@ const EmptyPlaylist = () => {
         </div>
       </div>
       <ul>
-        {songs?.length > 0 &&
-          songs?.map((song) => (
+        {filteredSongs.length > 0 &&
+          filteredSongs.map((song) => (
             <li
               key={song?.id}
               className={`flex justify-between items-center py-2 hover:bg-zinc-800 rounded-md p-2 mx-8 cursor-pointer ${
@@ -121,7 +135,7 @@ const EmptyPlaylist = () => {
                 </span>
               </div>
               <button
-                onClick={() => handleAdd(song.name)}
+                onClick={() => handleAdd(song?.id)}
                 className="flex gap-6 items-center border border-white px-4 py-2 rounded-full hover:scale-105 
               opacity-90 transition-all hover:opacity-100"
               >
@@ -142,11 +156,10 @@ const EmptyPlaylist = () => {
       {showModal && (
         <EditPlaylistModal
           onClose={() => setShowModal(false)}
-          title={title}
-          setTitle={setTitle}
-          files={files}
-          setFiles={setFiles}
-          setDescription={setDescription}
+          playlist={playlist}
+          setPlaylist={setPlaylist}
+          file={file}
+          setFile={setFile}
         />
       )}
     </div>

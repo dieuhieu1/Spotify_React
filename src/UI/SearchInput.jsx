@@ -21,21 +21,19 @@ const SearchInput = () => {
         findPlaylists(query);
         findArtists(query);
       }, 500); // Debounce 500ms
-      return () => clearTimeout(timer); // Clear timeout nếu query thay đổi trước khi timeout
+      return () => clearTimeout(timer);
     } else {
       fetchTopResults("");
       findSongs("");
       findPlaylists("");
       findArtists("");
     }
-  }, [query]);
+  }, [fetchTopResults, findArtists, findPlaylists, findSongs, query]);
 
   return (
     <div>
       <div className="relative w-full max-w-md mx-auto">
-        {/* Thanh tìm kiếm */}
-        <div className="relative w-[450px]">
-          {/* Input */}
+        <div className="relative w-[450px] w-">
           <input
             type="text"
             placeholder="Bạn muốn phát nội dung gì?"
@@ -45,11 +43,9 @@ const SearchInput = () => {
             }
             onChange={(e) => setQuery(e.target.value)}
           />
-          {/* Search Icon */}
           <div className="absolute left-6 top-1/2 -translate-y-1/2">
             <FontAwesomeIcon icon={faMagnifyingGlass} size="lg" />
           </div>
-          {/* Tooltip */}
         </div>
       </div>
     </div>

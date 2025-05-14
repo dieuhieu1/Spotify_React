@@ -1,28 +1,34 @@
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import AdminHeader from "@/features/admin/AdminHeader";
 import DashboardStats from "@/features/admin/DashboardStats";
-import AlbumsTabContent from "@/features/admin/TabContent/AlbumsTabContent";
-import ArtitsTabContent from "@/features/admin/TabContent/ArtitsTabContent";
-import PlaylistsTabContent from "@/features/admin/TabContent/PlaylistsTabContent";
-import SongsTabContent from "@/features/admin/TabContent/SongsTabContent";
-import UsersTabContent from "@/features/admin/TabContent/UsersTabContent";
+import AlbumsTabContent from "@/features/admin/tab-content/AlbumsTabContent";
+import ArtitsTabContent from "@/features/admin/tab-content/ArtitsTabContent";
+import PlaylistsTabContent from "@/features/admin/tab-content/PlaylistsTabContent";
+import SongsTabContent from "@/features/admin/tab-content/SongsTabContent";
+import UsersTabContent from "@/features/admin/tab-content/UsersTabContent";
+import { useArtistsStore } from "@/store/useArtistsStore";
 import { useAuthStore } from "@/store/useAuthStore";
 import { useMusicStore } from "@/store/useMusicStore";
+import { useUploadStore } from "@/store/useUploadStore";
 import { TabsContent } from "@radix-ui/react-tabs";
 import { Album, ListMusic, Music, SquareUserRound } from "lucide-react";
 import { useEffect } from "react";
 
 function Admin() {
   const { isAdmin, isLoading } = useAuthStore();
-  const { fetchSongs, fetchStats, fetchArtists } = useMusicStore();
+  const { fetchArtists } = useArtistsStore();
+  const { fetchAllFiles } = useUploadStore();
+  const { fetchSongs, fetchStats } = useMusicStore();
   useEffect(() => {
     //FetchAlbums()
     //FetchSongs()
     fetchSongs(1, 10);
-    fetchArtists(1, 10);
+    fetchArtists(1, 10, "name", "asc");
+    fetchAllFiles();
+
     //FetchPlaylists()
     fetchStats();
-  }, [fetchSongs, fetchStats, fetchArtists]);
+  }, [fetchSongs, fetchStats, fetchArtists, fetchAllFiles]);
 
   if (!isAdmin && !isLoading) return <div>Unauthoriezd</div>;
   return (

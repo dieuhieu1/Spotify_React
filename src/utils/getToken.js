@@ -1,4 +1,4 @@
-export function getToken() {
+export function getTokenFromURL() {
   const urlParams = new URLSearchParams(window.location.search);
   const res = urlParams.get("access_token");
 

@@ -4,10 +4,12 @@ import { axiosInstance } from "@/lib/axios";
 export const registerAPI = async (name, email, password, dob) => {
   try {
     // Gửi yêu cầu đăng nhập
+    const confirmPassword = password;
     const response = await axiosInstance.post("/auth/register", {
       name,
       email,
       password,
+      confirmPassword,
       dob,
     });
 

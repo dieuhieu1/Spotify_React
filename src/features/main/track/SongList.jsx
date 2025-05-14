@@ -1,16 +1,12 @@
 import { formatTime } from "@/features/player/PlaybackControls";
+import { useArtistsStore } from "@/store/useArtistsStore";
 import { useMusicStore } from "@/store/useMusicStore";
 import { useEffect } from "react";
 
 const SongList = () => {
   // Dữ liệu mẫu cho danh sách đề xuất và bài hát
-  const {
-    current,
-    fetchSongsByGenre,
-    suggestSongs,
-    fetchArtistById,
-    currentArtist,
-  } = useMusicStore();
+  const { current, fetchSongsByGenre, suggestSongs } = useMusicStore();
+  const { fetchArtistById, currentArtist } = useArtistsStore();
   console.log(current);
 
   useEffect(() => {

@@ -16,7 +16,7 @@ import { useNavigate } from "react-router-dom";
 const SignUp = ({ handleToggle }) => {
   const navigate = useNavigate();
 
-  const [isHidden, setIsHidden] = useState(false);
+  const [isHidden, setIsHidden] = useState(true);
   const [loading, setLoading] = useState(false);
   // INFO
   const [name, setName] = useState("");
@@ -60,11 +60,17 @@ const SignUp = ({ handleToggle }) => {
       setLoading(false);
       return;
     }
-
-    const dob = date + "/" + selectedMonth + "/" + year;
+    let dob;
+    if (selectedMonth.length < 2) {
+      dob = year + "-0" + selectedMonth + "-" + date;
+    } else {
+      dob = year + "-" + selectedMonth + "-" + date;
+    }
 
     try {
+      console.log(dob);
       const data = await registerAPI(name, email, password, dob);
+
       if (data.code === 201) {
         clearState();
       }
@@ -77,7 +83,7 @@ const SignUp = ({ handleToggle }) => {
     }
   };
   return (
-    <div className="h-full bg-red-300 relative ">
+    <div className="h-full bg-[#7a1818] relative ">
       <div className=" flex justify-between items-center h-[10%] px-10 pt-14">
         <p
           className="font-bold text-4xl text-stone-50 cursor-pointer"

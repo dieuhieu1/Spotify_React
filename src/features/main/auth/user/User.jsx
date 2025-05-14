@@ -5,7 +5,7 @@ import { useState, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 export default function User() {
-  const { user } = useAuthStore();
+  const { user, reset } = useAuthStore();
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
   const { setIsLogin } = useAuth();
@@ -17,6 +17,7 @@ export default function User() {
   const handleLogout = () => {
     // Xử lý đăng xuất
     logOut();
+    reset();
     sessionStorage.removeItem("authToken");
     setIsLogin(false);
     navigate("/"); // Chuyển hướng về trang đăng nhập hoặc làm mới trang

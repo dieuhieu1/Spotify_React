@@ -9,15 +9,15 @@ import { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/providers/AuthProvider";
 import { useAuthStore } from "@/store/useAuthStore";
+import { usePlaylistStore } from "@/store/usePlaylistStore";
 
 function LeftSidebar() {
   const {
     savedPlaylists = [],
     isLoading,
     fetchSavedPlaylists,
-    playlists,
-    fetchPlaylists,
   } = useMusicStore();
+  const { playlists, fetchPlaylists } = usePlaylistStore();
   const { user } = useAuthStore();
   const navigate = useNavigate();
   const { isLogin, setIsDialogOpen } = useAuth();
@@ -38,10 +38,7 @@ function LeftSidebar() {
   }, [fetchSavedPlaylists, fetchPlaylists]);
 
   // Hợp nhất playlists
-  const combinedPlaylists = [
-    ...(savedPlaylists || []),
-    ...(user?.createdPlaylists || []),
-  ];
+  const combinedPlaylists = [...(user?.createdPlaylists || [])];
 
   return (
     <div className="h-[100%] flex flex-col gap-2 rounded-md bg-primary p-4 font-medium text-stone-300">
@@ -53,7 +50,10 @@ function LeftSidebar() {
             <p className="font-bold text-textPrimary">Thư viện</p>
           </div>
           <div className="flex items-center gap-5 mr-3 text-xl">
-            <FontAwesomeIcon icon={faPlus} />
+            <FontAwesomeIcon
+              icon={faPlus}
+              onClick={() => navigate("playlist")}
+            />
             <FontAwesomeIcon icon={faArrowRight} />
           </div>
         </div>

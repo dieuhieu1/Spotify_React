@@ -1,14 +1,13 @@
 import { axiosInstance } from "@/lib/axios";
 
 // Gọi API login và xử lý lỗi
-export const createPlaylist = async (formData) => {
+export const createPlaylist = async (playlistData) => {
   try {
-    const response = await axiosInstance.post("/playlist", formData, {
+    const response = await axiosInstance.post("/playlist", playlistData, {
       headers: {
-        "Content-Type": "multipart/form-data",
+        "Content-Type": "application/json",
       },
     });
-    console.log(response.data.result);
     return response.data.result;
   } catch (error) {
     console.log(error);

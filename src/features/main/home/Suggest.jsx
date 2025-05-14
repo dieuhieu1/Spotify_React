@@ -2,24 +2,17 @@ import { useMusicStore } from "@/store/useMusicStore";
 
 import PlayBtn from "./PlayBtn";
 import LoginDialog from "@/UI/LoginDialog";
-import { useEffect, useState } from "react";
+
 import { useAuth } from "@/providers/AuthProvider";
+import { useArtistsStore } from "@/store/useArtistsStore";
 
 const Suggest = () => {
-  const {
-    fetchTrendingSongs,
-    fetchFeaturedPlaylists,
-    trendingSongs,
-    featuresPlaylists,
-  } = useMusicStore();
+  const { artists } = useArtistsStore();
+  const { trendingSongs } = useMusicStore();
   const { isDialogOpen, setIsDialogOpen } = useAuth();
 
-  useEffect(() => {
-    fetchFeaturedPlaylists(1, 10);
-    fetchTrendingSongs();
-  }, [fetchFeaturedPlaylists, fetchTrendingSongs]);
   return (
-    <div className="bg-gradient-to-b from-stone-900 to-primary min-h-screen text-white p-8">
+    <div className="mb-16">
       {/* Phần Nghệ sĩ phổ biến */}
       <section className="mb-8">
         <div className="flex items-center justify-between mb-4">
@@ -29,22 +22,26 @@ const Suggest = () => {
           </span>
         </div>
 
-        <div className="grid grid-cols-6 gap-4">
+        <div className="grid grid-cols-6 gap-2">
           {trendingSongs.map((song) => (
             <div
               onClick={() => setIsDialogOpen(true)}
               key={song.id}
-              className="flex flex-col items-center hover:bg-zinc-700/40 transition-all cursor-pointer rounded-md relative group"
+              className="flex flex-col hover:bg-zinc-700/40 transition-all cursor-pointer relative group p-3 rounded-md"
             >
-              <img
-                src={song.imageURL}
-                alt={song.name}
-                className="w-[230px] h-[230px] aspect-square object-cover rounded-full mb-2 p-2"
-              />
-              <p className="text-sm font-semibold text-center">{song.name}</p>
-              <p className="text-xs text-gray-400">
+              <div className="aspect-square shadow-sm rounded-md shadow-black overflow-hidden">
+                <img
+                  src={song.imageURL}
+                  alt={song.name}
+                  className="w-full h-full aspect-square object-cover transition-transform duration-300 group-hover:scale-105 "
+                />
+              </div>
+
+              <p className="text-md font-semibold mt-2">{song.name}</p>
+              <p className="text-sm text-gray-400">
                 {song?.artists?.[0]?.name}
               </p>
+
               <PlayBtn />
             </div>
           ))}
@@ -60,29 +57,28 @@ const Suggest = () => {
           </span>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-[repeat(6,_200px)] gap-4">
-          {featuresPlaylists?.map((playlist) => (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-[repeat(6,_200px)] gap-2">
+          {artists?.map((artist) => (
             <div
               onClick={() => setIsDialogOpen(true)}
-              key={playlist?.id}
-              className=" p-4 rounded-md w-[100%] hover:bg-zinc-700/40 transition-all cursor-pointer relative group"
+              key={artist?.id}
+              className=" p-2 rounded-md w-[100%] hover:bg-zinc-700/40 transition-all cursor-pointer relative group"
             >
-              <div className="aspect-square rounded-md shadow-lg overflow-hidden">
+              <div className="aspect-square rounded-full shadow-sm  shadow-black overflow-hidden">
                 <img
                   src={
-                    playlist?.imageURL ||
+                    artist?.imageURL ||
                     "https://discussions.apple.com/content/attachment/592590040"
                   }
-                  alt={playlist?.title}
+                  alt={artist?.name}
                   className="w-full h-full object-cover transition-transform duration-300 
                 group-hover:scale-105 "
                 />
               </div>
-
-              <h3 className="font-medium mb-2 truncate">{playlist?.title}</h3>
-              <p className="text-sm text-zinc-400 truncate">
-                {playlist?.creator}
-              </p>
+              <div className="mt-2">
+                <p className="text-md font-semibold">{artist?.name}</p>
+                <p className="text-sm text-gray-400">Nghệ sĩ</p>
+              </div>
               <PlayBtn />
             </div>
           ))}

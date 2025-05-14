@@ -1,17 +1,23 @@
-import React, { useState, useRef } from "react";
-
+import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
+import { useUploadStore } from "@/store/useUploadStore";
+import { X } from "lucide-react";
+import { useState, useRef } from "react";
+import toast from "react-hot-toast";
+const LoadingSkel = () => {
+  return <Skeleton className="h-[112px] w-[250px] bg-gray-600" />;
+};
 const EditPlaylistModal = ({
   onClose,
-  title,
-  setTitle,
-  files,
-  setFiles,
-  setDescription,
+  file,
+  setFile,
+  playlist,
+  setPlaylist,
 }) => {
   const [playlistDescription, setPlaylistDescription] = useState("");
-  const [localImage, setLocalImage] = useState(files?.image || null); // State cục bộ cho ảnh
-  const [localTitle, setLocalTitle] = useState(title); // State cục bộ cho tiêu đề
+  const [localTitle, setLocalTitle] = useState(playlist?.title); // State cục bộ cho tiêu đề
 
+  const { uploadFileImage, deleteFile, isUploading } = useUploadStore();
   const fileInputRef = useRef(null); // Tạo ref cho input file
   const modalRef = useRef();
   const handleOutsideClick = (e) => {
@@ -26,22 +32,37 @@ const EditPlaylistModal = ({
   };
 
   // Hàm xử lý khi file được tải lên
-  const handleFileChange = (e) => {
+  const handleFileChange = async (e) => {
     const file = e.target.files[0];
-    setFiles({ image: file });
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = () => {
-        setLocalImage(reader.result); // Hiển thị ảnh preview
-      };
-      reader.readAsDataURL(file);
+    // Upload File to Cloudinary
+    const result = await uploadFileImage(file);
+    if (result) {
+      toast.success("Image uploaded successfully");
+      setFile(result);
+    } else {
+      toast.error("Failed to upload Image");
     }
   };
+  const handleDeleteFile = async () => {
+    if (!file) {
+      return toast.error("No file existed for delete");
+    }
+    const result = await deleteFile(file.id);
 
+    if (result) {
+      toast.success("Song deleted successfully");
+      setFile(null);
+    } else {
+      toast.error("Failed to deleted song");
+    }
+  };
   const handleSave = () => {
-    setFiles((prev) => ({ ...prev, image: localImage })); // Cập nhật ảnh về component cha
-    setDescription(playlistDescription); // Cập nhật ảnh về component cha
-    setTitle(localTitle); // Cập nhật tiêu đề về component cha
+    setPlaylist({
+      ...playlist,
+      description: playlistDescription,
+      title: localTitle,
+    }); // Cập nhật ảnh về component cha
+
     onClose();
   };
 
@@ -60,22 +81,38 @@ const EditPlaylistModal = ({
         </h2>
 
         {/* Nội dung */}
+        {/* Hình đại diện */}
         <div className="flex gap-4 mb-6">
-          {/* Hình đại diện */}
-          <div
-            className="w-[112px] h-[112px] bg-zinc-700 flex items-center justify-center rounded-md cursor-pointer"
-            onClick={handleImageClick}
-          >
-            {localImage ? (
-              <img
-                src={localImage}
-                alt="Preview"
-                className="w-full h-full object-cover rounded-md"
-              />
-            ) : (
-              <span className="text-5xl text-gray-400">🎵</span>
-            )}
-          </div>
+          {isUploading ? (
+            <LoadingSkel />
+          ) : (
+            <div className="w-[112px] h-[112px] bg-zinc-700 flex items-center justify-center rounded-md cursor-pointer">
+              {file ? (
+                <div className="relative w-full h-full ">
+                  <img
+                    src={file?.url}
+                    alt="Preview"
+                    className="w-full h-full object-cover rounded-md"
+                    onClick={handleImageClick}
+                  />
+                  <Button
+                    className="absolute top-2 right-2 p-1"
+                    size={20}
+                    onClick={handleDeleteFile}
+                  >
+                    <X />
+                  </Button>
+                </div>
+              ) : (
+                <span
+                  className="text-5xl text-gray-400"
+                  onClick={handleImageClick}
+                >
+                  🎵
+                </span>
+              )}
+            </div>
+          )}
 
           {/* Input file ẩn */}
           <input

@@ -36,8 +36,8 @@ const Track = () => {
 
   const handlePlaySong = () => {
     if (!current) return;
-    const isCurrentSong = currentSong?.id === current?.id;
-    if (isCurrentSong) {
+    const iscurrentSong = currentSong?.id === current?.id;
+    if (iscurrentSong) {
       togglePlay();
     } else {
       playSong(current, 0);

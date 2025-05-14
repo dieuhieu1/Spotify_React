@@ -12,6 +12,7 @@ const FeaturedSection = () => {
     ...(savedPlaylists || []),
     ...(user?.createdPlaylists || []),
   ];
+  console.log(user?.createdPlaylists);
   return (
     <>
       {/* Kiểm tra nếu có playlists */}
