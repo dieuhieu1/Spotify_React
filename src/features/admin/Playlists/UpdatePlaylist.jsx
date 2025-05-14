@@ -13,7 +13,6 @@ import { useEffect, useState } from "react";
 import UploadImage from "../file-upload/UploadImage";
 import { useUploadStore } from "@/store/useUploadStore";
 import { usePlaylistStore } from "@/store/usePlaylistStore";
-import CreatableSelect from "react-select/creatable";
 import { useMusicStore } from "@/store/useMusicStore";
 import SongSelection from "./SongSelection";
 
