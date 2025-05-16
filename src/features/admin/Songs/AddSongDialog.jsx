@@ -21,7 +21,7 @@ import { useUploadStore } from "@/store/useUploadStore";
 
 const AddSongDialog = () => {
   const { addSong, isLoading } = useMusicStore();
-  const { setIsImageUploaded, setIsUploaded } = useUploadStore();
+  const { setIsImageUploaded, setIsUploaded, isUploading } = useUploadStore();
   const [audio, setAudio] = useState(null);
   const [image, setImage] = useState(null);
   const [songDialogOpen, setSongDialogOpen] = useState(false);
@@ -127,14 +127,14 @@ const AddSongDialog = () => {
               setSongDialogOpen(false);
               clearData();
             }}
-            disabled={isLoading}
+            disabled={isLoading || isUploading}
             className="text-white hover:opacity-80 hover:bg-zinc-600 transition duration-200"
           >
             Cancel
           </Button>
           <Button
             onClick={handleSubmit}
-            disabled={isLoading}
+            disabled={isLoading || isUploading}
             className="text-white hover:opacity-80 hover:bg-zinc-600 transition duration-200"
           >
             {isLoading ? "Uploading..." : "Add Song"}

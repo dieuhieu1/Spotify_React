@@ -28,9 +28,11 @@ const router = createBrowserRouter([
     errorElement: <PageNotFound />,
     children: [
       { path: "", element: <Home /> },
-      { path: "search", element: <Search /> },
+      {
+        path: "search",
+        element: <Search />,
+      },
       { path: "search/searchQuery", element: <SearchResult /> },
-
       { path: "album/:albumId", element: <Album /> },
       { path: "track/:trackId", element: <Track /> },
       { path: "playlist/:playlistId", element: <Playlist /> },

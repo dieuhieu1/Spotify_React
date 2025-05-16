@@ -3,25 +3,21 @@ import searc_icon from "../assets/client-assets/search.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRight, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import PlaylistSkeleton from "@/LoadingSkel/PlaylistSkeleton";
+import PlaylistSkeleton from "@/loadingSkeleton/PlaylistSkeleton";
 import { useMusicStore } from "@/store/useMusicStore";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/providers/AuthProvider";
 import { useAuthStore } from "@/store/useAuthStore";
 import { usePlaylistStore } from "@/store/usePlaylistStore";
 
 function LeftSidebar() {
-  const {
-    savedPlaylists = [],
-    isLoading,
-    fetchSavedPlaylists,
-  } = useMusicStore();
-  const { playlists, fetchPlaylists } = usePlaylistStore();
-  const { user } = useAuthStore();
+  const { isLoading } = useMusicStore();
+  const { newPlaylist } = usePlaylistStore();
+  const { userPlaylists, checkAdminStatus } = useAuthStore();
   const navigate = useNavigate();
   const { isLogin, setIsDialogOpen } = useAuth();
-
+  const [combinedPlaylists, setCombinedPlaylists] = useState([]);
   // Hàm xử lý tạo playlist
   const handleCreate = () => {
     if (isLogin) {
@@ -33,12 +29,14 @@ function LeftSidebar() {
 
   // Fetch playlists
   useEffect(() => {
-    fetchSavedPlaylists();
-    fetchPlaylists(1, 10);
-  }, [fetchSavedPlaylists, fetchPlaylists]);
+    checkAdminStatus();
+  }, [checkAdminStatus, newPlaylist]);
 
-  // Hợp nhất playlists
-  const combinedPlaylists = [...(user?.createdPlaylists || [])];
+  useEffect(() => {
+    if (userPlaylists) {
+      setCombinedPlaylists(userPlaylists);
+    }
+  }, [userPlaylists]);
 
   return (
     <div className="h-[100%] flex flex-col gap-2 rounded-md bg-primary p-4 font-medium text-stone-300">

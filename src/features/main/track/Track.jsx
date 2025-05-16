@@ -18,8 +18,13 @@ import SongList from "./SongList";
 
 const Track = () => {
   const { trackId } = useParams();
-  const { fetchSongById, isMainLoading, current, fetchArtistById } =
-    useMusicStore();
+  const {
+    fetchSongById,
+    isMainLoading,
+    current,
+    fetchArtistById,
+    trendingSongs,
+  } = useMusicStore();
   const { currentSong, isPlaying, togglePlay, playSong } = usePlayerStore();
 
   const [showDetail, setShowDetail] = useState(false);
@@ -100,24 +105,7 @@ const Track = () => {
               </div>
               <PlaylistMenu showDetail={showDetail} />
             </div>
-            {/* <div className="flex items-start flex-col justify-center bg-bgPrimary hover:bg-bgHover cursor-pointer rounded-lg p-8 gap-4 w-[30%] group transition-all relative">
-              <img
-                src={topResults?.[0]?.response?.imageURL}
-                alt={topResults?.[0]?.response?.name}
-                className="w-24 h-24 rounded-full aspect-square object-cover"
-              />
 
-              <div>
-                <h3 className="font-bold text-4xl">
-                  {topResults?.[0]?.response?.name ||
-                    topResults?.[0]?.response?.title}
-                </h3>
-                <p className="text-gray-400 text-lg mt-2">
-                  {topResults?.[0]?.type} •{" "}
-                  {topResults?.[0]?.response?.creator || ""}
-                </p>
-              </div>
-            </div> */}
             <SongList />
           </div>
         </div>

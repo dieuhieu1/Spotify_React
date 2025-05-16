@@ -5,7 +5,6 @@ import { Pause, Play } from "lucide-react";
 
 const PlayButtonArtist = ({ artist }) => {
   const { isPlaying, togglePlay, playArtist, currentSong } = usePlayerStore();
-  console.log("artist truyen vao:", artist);
   const { current, setCurrent } = useMusicStore();
   const isCurrentArtist = artist?.id === current?.id;
 
@@ -26,6 +25,7 @@ const PlayButtonArtist = ({ artist }) => {
       togglePlay(); // Nếu bài hát trong playlist đang phát, thì toggle play/pause
     } else {
       console.log("Choi playlist moi", current);
+      console.log(artist);
       playArtist(artist?.songs, 0); // Nếu không, phát playlist từ bài đầu tiên
     }
   };

@@ -5,12 +5,15 @@ import { usePlaylistStore } from "@/store/usePlaylistStore";
 import toast from "react-hot-toast";
 import SongSearch from "../search/SongSearch";
 import EditPlaylistModal from "./EditPlaylistModal ";
+import { useNavigate } from "react-router-dom";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 const EmptyPlaylist = () => {
   const { user } = useAuthStore();
+  const navigate = useNavigate();
   const { trendingSongs } = useMusicStore();
   const { addPlaylist } = usePlaylistStore();
-
+  const [addedSongs, setAddedSongs] = useState([]);
   const [songIds, setSongIds] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [query, setQuery] = useState("");
@@ -30,6 +33,7 @@ const EmptyPlaylist = () => {
     const result = await addPlaylist(playlist);
     if (result) {
       toast.success("Playlist created successfully");
+      navigate("/");
     } else {
       toast.error("Failed to create playlist");
     }
@@ -40,12 +44,13 @@ const EmptyPlaylist = () => {
     if (!songIds.includes(songId)) {
       const selectedSongs = [...songIds, songId];
       setSongIds(selectedSongs);
+      setAddedSongs((prev) => [...prev, songId]);
       setPlaylist({ ...playlist, songIds: selectedSongs });
     }
   };
 
   return (
-    <div className="bg-zinc-900 text-white min-h-screen">
+    <ScrollArea className="bg-zinc-900 text-white min-h-screen">
       {/* Header Playlist */}
       <div className="bg-gradient-to-b from-zinc-800 to-zinc-900 p-8 flex items-center gap-6">
         <div
@@ -88,17 +93,17 @@ const EmptyPlaylist = () => {
           query={query}
           setQuery={setQuery}
           handleAdd={handleAdd}
+          addedSongs={addedSongs}
         />
-      </div>
-
-      {/* Footer */}
-      <div className="flex justify-center p-6">
-        <button
-          className="bg-white text-black font-bold py-2 px-4 rounded-full hover:bg-gray-200 transition"
-          onClick={() => handleCreate()}
-        >
-          Lưu danh sách phát
-        </button>
+        {/* Footer */}
+        <div className="flex justify-center p-6">
+          <button
+            className="bg-white text-black font-bold py-2 px-4 rounded-full hover:bg-gray-200 transition"
+            onClick={() => handleCreate()}
+          >
+            Lưu danh sách phát
+          </button>
+        </div>
       </div>
 
       {showModal && (
@@ -110,7 +115,7 @@ const EmptyPlaylist = () => {
           setFile={setFile}
         />
       )}
-    </div>
+    </ScrollArea>
   );
 };
 

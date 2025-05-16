@@ -5,6 +5,13 @@ export const usePlayerStore = create((set, get) => ({
   isPlaying: false,
   queue: [],
   currentIndex: -1,
+  trendingSongs: [],
+  setTrendingSongs: (songs) => {
+    set({ trendingSongs: songs });
+  },
+  setQueue: (songs) => {
+    set({ queue: songs });
+  },
   initializeQueue: (songs) => {
     set({
       queue: songs,
@@ -44,6 +51,7 @@ export const usePlayerStore = create((set, get) => ({
       return;
     }
     set({
+      queue: get().trendingSongs.filter((item) => item.id !== song.id),
       currentSong: song,
       isPlaying: true,
     });
@@ -71,6 +79,7 @@ export const usePlayerStore = create((set, get) => ({
     const { currentIndex, queue } = get();
     const nextIndex = currentIndex + 1;
     // Neu khong con next Song de play
+    console.log(get().trendingSongs);
     if (nextIndex < queue.length) {
       const nextSong = queue[nextIndex];
       set({

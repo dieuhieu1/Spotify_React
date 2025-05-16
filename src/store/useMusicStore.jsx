@@ -55,7 +55,7 @@ export const useMusicStore = create((set) => ({
     set({ isMainLoading: true, error: null });
     try {
       const response = await axiosInstance.get(
-        "/songs?pageNo=1&pageSize=7&viewerSortOrder=desc"
+        "/songs?pageNo=1&pageSize=100&viewerSortOrder=desc"
       );
       set({ trendingSongs: response.data.result.items });
     } catch (error) {
@@ -134,7 +134,7 @@ export const useMusicStore = create((set) => ({
       });
       set((state) => ({ songs: [...state.songs, response.data.result] }));
 
-      toast.success("Artist created successfully!");
+      toast.success("Songs created successfully!");
     } catch (error) {
       console.log(error);
       toast.error("Error deleting song");

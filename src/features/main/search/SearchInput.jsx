@@ -3,11 +3,12 @@ import { useSearchStore } from "@/store/useSearchStore";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 const SearchInput = () => {
   const { fetchTopResults, findSongs, findPlaylists, findArtists } =
     useSearchStore();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [query, setQuery] = useState("");
   const navigate = useNavigate();
   const { isLogin } = useAuth();
@@ -41,7 +42,10 @@ const SearchInput = () => {
             onClick={() =>
               isLogin ? navigate("/search") : setIsDialogOpen(true)
             }
-            onChange={(e) => setQuery(e.target.value)}
+            onChange={(e) => {
+              setQuery(e.target.value);
+              setSearchParams({ query: e.target.value });
+            }}
           />
           <div className="absolute left-6 top-1/2 -translate-y-1/2">
             <FontAwesomeIcon icon={faMagnifyingGlass} size="lg" />

@@ -10,7 +10,7 @@ import {
 import { useMusicStore } from "@/store/useMusicStore";
 import { Trash2, UserRoundCheck } from "lucide-react";
 import { useEffect } from "react";
-import TableSkel from "../../../LoadingSkel/TableSkel";
+import TableSkel from "../../../loadingSkeleton/TableSkel";
 import { usePlaylistStore } from "@/store/usePlaylistStore";
 import DeleteDialog from "@/UI/DeleteDialog";
 import UpdatePlaylist from "./UpdatePlaylist";
@@ -43,7 +43,9 @@ const PlaylistTable = () => {
         {playlists?.map((playlist) => {
           const playlistName = playlist.title || "Unknown playlist"; // Default to "Unknown Title"
           const follower = playlist.follower || "Unknown Date"; // Default to "Unknown Date"
-          const imageURL = playlist.imageURL || ""; // Fallback to an empty string if imageURL is not provided
+          const imageURL =
+            playlist.imageURL ||
+            "https://discussions.apple.com/content/attachment/592590040"; // Fallback to an empty string if imageURL is not provided
           const songs = playlist.songs || [];
           const listener = playlist.listener || 0;
           return (

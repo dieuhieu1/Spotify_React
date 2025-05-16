@@ -1,5 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
+import { useArtistsStore } from "@/store/useArtistsStore";
+import { useMusicStore } from "@/store/useMusicStore";
 import { usePlayerStore } from "@/store/usePlayerStore";
 import {
   Laptop2,
@@ -24,9 +26,13 @@ export const formatTime = (seconds) => {
 const PlaybackControls = () => {
   const { currentSong, isPlaying, togglePlay, playNext, playPrevious } =
     usePlayerStore();
+  const { current } = useMusicStore();
+  const { currentArtist } = useArtistsStore();
+
   const [volume, setVolume] = useState(60);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
+
   const audioRef = useRef(null);
   useEffect(() => {
     audioRef.current = document.querySelector("audio");
@@ -50,6 +56,7 @@ const PlaybackControls = () => {
       audio.removeEventListener("ended", handleEnded);
     };
   }, [currentSong]);
+
   const handleSeek = (value) => {
     if (audioRef.current) {
       audioRef.current.currentTime = value[0];
@@ -72,7 +79,7 @@ const PlaybackControls = () => {
                   {currentSong.name}
                 </div>
                 <div className="text-sm text-zinc-400 truncate hover:underline cursor-pointer">
-                  {currentSong.artists?.[0]?.name}
+                  {currentSong.artist || current?.name || currentArtist?.name}
                 </div>
               </div>
             </>

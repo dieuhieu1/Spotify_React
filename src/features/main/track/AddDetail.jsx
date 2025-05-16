@@ -2,10 +2,15 @@ import { useState } from "react";
 import { ChevronRight, Plus } from "lucide-react";
 import { useMusicStore } from "@/store/useMusicStore";
 import { useAuthStore } from "@/store/useAuthStore";
-import { updatePlaylist } from "@/services/apiPlaylist";
+import toast from "react-hot-toast";
+import { usePlaylistStore } from "@/store/usePlaylistStore";
+import { useNavigate, useParams } from "react-router-dom";
 
 const PlaylistMenu = ({ showDetail }) => {
+  const navigate = useNavigate();
+  const { trackId } = useParams();
   const [showSubMenu, setShowSubMenu] = useState(false);
+  const { updatePlaylist } = usePlaylistStore();
   const { savedPlaylists = [] } = useMusicStore(); // Default value nếu playlists rỗng
   const { user } = useAuthStore();
   const { current } = useMusicStore();
@@ -13,17 +18,12 @@ const PlaylistMenu = ({ showDetail }) => {
     ...(savedPlaylists || []),
     ...(user?.createdPlaylists || []),
   ];
+  const handleUpdate = async (playlist) => {
+    const songId = Number.parseInt(trackId.valueOf());
 
-  const handleUpdate = (playlist) => {
-    console.log(playlist.title, playlist.id);
-    console.log(current.name);
-
-    const formData = new FormData();
-    formData.append("title", playlist.title);
-    formData.append("songs", current.name);
-
-    updatePlaylist(formData, playlist.id);
+    const result = await updatePlaylist({ songIds: [songId] }, playlist.id);
   };
+
   return (
     <>
       {showDetail && (
@@ -49,7 +49,10 @@ const PlaylistMenu = ({ showDetail }) => {
             >
               <ul className="px-2 py-2">
                 {/* Nút tạo danh sách phát mới */}
-                <li className="flex hover:bg-[#3E3E3E] w-full px-3 py-2 rounded-md cursor-pointer">
+                <li
+                  className="flex hover:bg-[#3E3E3E] w-full px-3 py-2 rounded-md cursor-pointer"
+                  onClick={() => navigate("/playlist")}
+                >
                   <Plus className="mr-2" />
                   <p>Danh Sách Phát Mới</p>
                 </li>
@@ -58,7 +61,7 @@ const PlaylistMenu = ({ showDetail }) => {
                 {combinedPlaylists.length > 0 ? (
                   combinedPlaylists.map((playlist) => (
                     <li
-                      onClick={() => handleUpdate(playlist)}
+                      onClick={() => handleUpdate(playlist)} // Thêm bài hát vào playlist
                       key={playlist?.id}
                       className="px-3 py-2 hover:bg-zinc-700 rounded cursor-pointer"
                     >

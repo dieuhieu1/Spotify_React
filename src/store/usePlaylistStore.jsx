@@ -3,12 +3,12 @@ import toast from "react-hot-toast";
 import { axiosInstance } from "@/lib/axios";
 
 // Define the store
-export const usePlaylistStore = create((set) => ({
+export const usePlaylistStore = create((set, get) => ({
   playlists: [],
   currentPlaylist: null,
   isLoading: false,
   error: null,
-
+  newPlaylist: [],
   // Fetch playlists with pagination
   fetchPlaylists: async (startPage, sizeOfPage) => {
     set({ isLoading: true, error: null });
@@ -44,45 +44,76 @@ export const usePlaylistStore = create((set) => ({
     set({ isLoading: true, error: null });
     try {
       const response = await axiosInstance.post("/playlists", playlistData, {
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
       });
       set((state) => ({
         playlists: [...state.playlists, response.data.result],
+        newPlaylist: response.data.result,
       }));
       toast.success("Playlist created successfully!");
     } catch (error) {
-      console.error(error);
       toast.error("Error creating playlist.");
     } finally {
       set({ isLoading: false });
     }
   },
+
   // Update playlist
-  updatePlaylist: async (playlistId, updatedData) => {
+  updatePlaylist: async (updatedData, playlistId) => {
     set({ isLoading: true, error: null });
     try {
-      const result = await axiosInstance.put(
+      console.log(updatedData);
+      const response = await axiosInstance.put(
         `/playlists/${playlistId}`,
         updatedData
       );
-
-      if (result) {
+      console.log(response.data.result.songs);
+      if (response) {
         toast.success("Playlist updated successfully!");
-
-        set((state) => ({
+        set({
           isLoading: false,
-          playlists: state.playlists.map((playlist) =>
-            playlist.id === playlistId
-              ? { ...playlist, ...result.data }
-              : playlist
-          ),
-        }));
+          currentPlaylist: response.data.result,
+        });
       }
     } catch (error) {
       console.error(error);
       toast.error("Error updating playlist.");
+      set({ isLoading: false, error: error.message });
+    } finally {
+      set({ isLoading: false });
+    }
+  },
+  // Update playlist
+  deleteSongInPlaylist: async (songId, playlistId) => {
+    set({ isLoading: true, error: null });
+    try {
+      const result = await axiosInstance.delete(
+        `/playlists/${playlistId}/songs/${songId}`
+      );
+
+      if (result) {
+        toast.success("Songs deleted successfully!");
+
+        // Lọc ra mảng songs mới
+        const updatedSongs = get().currentPlaylist.songs.filter(
+          (song) => song.id !== songId
+        );
+
+        // Lấy currentPlaylist hiện tại
+        const currentPlaylist = get().currentPlaylist;
+
+        // Cập nhật currentPlaylist với songs mới, giữ nguyên các thuộc tính khác
+        set({
+          isLoading: false,
+          currentPlaylist: {
+            ...currentPlaylist,
+            songs: updatedSongs,
+          },
+        });
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Error deleting song.");
       set({ isLoading: false, error: error.message });
     } finally {
       set({ isLoading: false });

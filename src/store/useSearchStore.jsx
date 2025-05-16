@@ -1,6 +1,5 @@
 import { axiosInstance } from "@/lib/axios";
 import { create } from "zustand";
-import toast from "react-hot-toast";
 
 export const useSearchStore = create((set) => ({
   isSearchLoading: false,
@@ -50,7 +49,7 @@ export const useSearchStore = create((set) => ({
     try {
       // Gọi API
       const response = await axiosInstance(
-        `/songs/search?name=${query}&pageNo=1&pageSize=4`
+        `/songs/search?pageNo=1&pageSize=20&search=name~${query}`
       );
 
       // Kiểm tra dữ liệu trả về
@@ -76,10 +75,12 @@ export const useSearchStore = create((set) => ({
 
     try {
       // Gọi API
+
       const response = await axiosInstance(
-        `/playlists/search?title=${query}&pageNo=1&pageSize=7`
+        `/playlists/search?pageNo=1&pageSize=20&search=name~${query}`
       );
 
+      console.log(response);
       // Kiểm tra dữ liệu trả về
       const items = response.data?.result?.items || [];
       set({ playlists: items });
@@ -104,9 +105,9 @@ export const useSearchStore = create((set) => ({
     try {
       // Gọi API
       const response = await axiosInstance(
-        `/artists/search?name=${query}&pageNo=1&pageSize=5`
+        `/artists/search?pageNo=1&pageSize=20&search=name~${query}`
       );
-
+      console.log(response);
       // Kiểm tra dữ liệu trả về
       const items = response.data?.result?.items || [];
       set({ artists: items });

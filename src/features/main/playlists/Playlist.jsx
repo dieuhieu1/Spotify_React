@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import MainPlaylistSkeleton from "@/LoadingSkel/MainPlaylistSkeleton";
+import MainPlaylistSkeleton from "@/loadingSkeleton/MainPlaylistSkeleton";
 import { useMusicStore } from "@/store/useMusicStore";
 import { usePlayerStore } from "@/store/usePlayerStore";
 import { usePlaylistStore } from "@/store/usePlaylistStore";
@@ -17,13 +17,14 @@ import {
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import SongSearch from "../search/SongSearch";
+import toast from "react-hot-toast";
 
 function Playlist() {
   const { playlistId } = useParams();
   const { isMainLoading, trendingSongs } = useMusicStore();
-  const { currentPlaylist } = usePlaylistStore();
+  const { currentPlaylist, deleteSongInPlaylist } = usePlaylistStore();
 
-  const { fetchPlaylistById, addSongToPlaylist } = usePlaylistStore();
+  const { fetchPlaylistById, updatePlaylist } = usePlaylistStore();
   const { currentSong, isPlaying, playPlaylist, togglePlay } = usePlayerStore();
 
   const [query, setQuery] = useState("");
@@ -52,13 +53,16 @@ function Playlist() {
     playPlaylist(currentPlaylist?.songs, index);
   };
 
-  // Hàm thêm bài hát vào playlist
   const handleAddSongToPlaylist = (songId) => {
     if (currentPlaylist) {
-      addSongToPlaylist(currentPlaylist.id, songId);
+      updatePlaylist({ songIds: [songId] }, currentPlaylist.id);
     }
   };
+  const handleDeleteSongFromPlaylist = async (songId) => {
+    const id = Number.parseInt(playlistId.valueOf());
 
+    await deleteSongInPlaylist(songId, id);
+  };
   if (isMainLoading) {
     return <MainPlaylistSkeleton />;
   }
@@ -153,7 +157,7 @@ function Playlist() {
                 {/* Songs List */}
                 <div className="px-6">
                   <div className="space-y-2 py-4">
-                    {currentPlaylist?.songs.map((song, index) => {
+                    {currentPlaylist?.songs?.map((song, index) => {
                       const isCurrentSong = currentSong?.id === song.id;
 
                       return (
@@ -162,20 +166,32 @@ function Playlist() {
                           className={`grid grid-cols-[16px_4fr_2fr_1fr_0.25fr] gap-4 px-4 py-2 text-sm text-zinc-400 hover:bg-white/5 rounded-md group cursor-pointer`}
                         >
                           <div
-                            className="flex items-center justify-center"
+                            className="flex items-center justify-center group"
                             onClick={() => handlePlaySong(index)}
                           >
-                            {isCurrentSong && isPlaying ? (
-                              <div className="size-4 text-green-500">♫</div>
-                            ) : (
-                              <span className="group-hover">
-                                <Pause />
-                              </span>
+                            {isCurrentSong && isPlaying && (
+                              <>
+                                <div className="size-4 text-green-500 group-hover:hidden">
+                                  ♫
+                                </div>
+                                <span className="group-hover:block hidden">
+                                  <Pause className="h-4 w-4 text-green-500" />
+                                </span>
+                              </>
                             )}
-                            {!isCurrentSong && (
-                              <Play className="h-4 w-4 hidden group-hover:block" />
+
+                            {isCurrentSong && !isPlaying && (
+                              <>
+                                <span className="size-4 text-green-500 group-hover:hidden">
+                                  {index + 1}
+                                </span>
+                                <Play className="h-4 w-4 hidden group-hover:block text-green-500" />
+                              </>
                             )}
+
+                            {!isCurrentSong && <span>{index + 1}</span>}
                           </div>
+
                           <div className="flex items-center gap-2 ">
                             <img
                               src={
@@ -203,7 +219,11 @@ function Playlist() {
                             {formatDuration(song.duration)}
                           </div>
                           <div>
-                            <Button>
+                            <Button
+                              onClick={() =>
+                                handleDeleteSongFromPlaylist(song.id)
+                              }
+                            >
                               <X />
                             </Button>
                           </div>

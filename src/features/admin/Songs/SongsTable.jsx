@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/table";
 import { useMusicStore } from "@/store/useMusicStore";
 import { Calendar } from "lucide-react";
-import TableSkel from "../../../LoadingSkel/TableSkel";
+import TableSkel from "../../../loadingSkeleton/TableSkel";
 import UpdateSong from "../Songs/UpdateSong";
 import DeleteDialog from "../../../UI/DeleteDialog";
 

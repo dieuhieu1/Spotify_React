@@ -7,6 +7,7 @@ import { useArtistsStore } from "@/store/useArtistsStore";
 import { useAuthStore } from "@/store/useAuthStore";
 import { useMusicStore } from "@/store/useMusicStore";
 import { usePlayerStore } from "@/store/usePlayerStore";
+import { usePlaylistStore } from "@/store/usePlaylistStore";
 import { getResponsePayment } from "@/utils/getToken";
 import { ScrollArea } from "@radix-ui/react-scroll-area";
 import { useEffect } from "react";
@@ -20,8 +21,9 @@ function Home() {
     trendingSongs,
     savedPlaylists,
   } = useMusicStore();
+  const { setUserPlaylists } = usePlaylistStore();
   const { fetchArtists, artists } = useArtistsStore();
-  const { initializeQueue } = usePlayerStore();
+  const { initializeQueue, setTrendingSongs } = usePlayerStore();
   const { isLogin } = useAuth();
 
   const data = getResponsePayment();
@@ -34,9 +36,8 @@ function Home() {
   useEffect(() => {
     fetchSavedPlaylists();
     fetchTrendingSongs();
-    fetchArtists(1, 7, "follower", "desc");
+    fetchArtists(1, 20, "follower", "desc");
   }, [fetchArtists, fetchSavedPlaylists, fetchTrendingSongs, isLogin]);
-  console.log(artists);
   useEffect(() => {
     if (savedPlaylists.length > 0 && trendingSongs.length > 0) {
       const songInSaved = savedPlaylists.flatMap((playlist) => playlist.songs);
@@ -47,15 +48,17 @@ function Home() {
       ];
       initializeQueue(uniqueSongs);
     }
-  }, [trendingSongs, savedPlaylists, initializeQueue]);
+    setTrendingSongs(trendingSongs);
+  }, [trendingSongs, savedPlaylists, initializeQueue, setTrendingSongs]);
+
   return (
     <div>
       <main className="rounded-md overflow-auto h-full bg-gradient-to-b from-stone-700 to-primary">
-        <ScrollArea className="h-[calc(100vh-150px)] ">
-          <div className="p-4 sm:p-6 ">
+        <ScrollArea className="h-[calc(100vh-200px)] ">
+          <div className="p-4 sm:p-6 pb-10">
             {/* <div className="bg-gradient-to-b from-stone-900 to-primary min-h-screen text-white p-8"> */}
             <div>
-              {trendingSongs && isLogin ? (
+              {isLogin ? (
                 <>
                   <h1 className="text-2xl sm:text-3xl font-bold mb-6">
                     Good afternoon
@@ -64,6 +67,11 @@ function Home() {
                   <SectionGrid
                     title="Trending Songs"
                     songs={trendingSongs}
+                    isMainLoading={isMainLoading}
+                  />
+                  <SectionGrid
+                    title="Popular Artists"
+                    artists={artists}
                     isMainLoading={isMainLoading}
                   />
                 </>

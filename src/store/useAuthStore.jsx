@@ -7,6 +7,7 @@ export const useAuthStore = create((set) => ({
   error: null,
   user: null,
   email: "",
+  userPlaylists: [],
   forgotPasswordToken: "",
   checkAdminStatus: async () => {
     set({ isLoading: true, error: null });
@@ -27,6 +28,7 @@ export const useAuthStore = create((set) => ({
       );
       set({
         user: userData,
+        userPlaylists: userData.createdPlaylists,
         isAdmin: isAdmin || false,
       });
     } catch (error) {
@@ -91,5 +93,6 @@ export const useAuthStore = create((set) => ({
       isLoading: false,
       error: null,
       user: null,
+      userPlaylists: [],
     }),
 }));

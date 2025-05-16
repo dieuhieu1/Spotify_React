@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/table";
 import { UserRoundCheck } from "lucide-react";
 import { useEffect } from "react";
-import TableSkel from "../../../LoadingSkel/TableSkel";
+import TableSkel from "../../../loadingSkeleton/TableSkel";
 import { useArtistsStore } from "@/store/useArtistsStore";
 import DeleteDialog from "@/UI/DeleteDialog";
 import UpdateArtist from "./UpdateArtist";

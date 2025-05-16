@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/table";
 import { useMusicStore } from "@/store/useMusicStore";
 import { Calendar, Trash2 } from "lucide-react";
-import TableSkel from "../../../LoadingSkel/TableSkel";
+import TableSkel from "../../../loadingSkeleton/TableSkel";
 import { useEffect } from "react";
 import useUserStore from "@/store/useUserStore";
 

@@ -9,7 +9,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { LayoutDashboardIcon } from "lucide-react";
 import { Link } from "react-router-dom";
 import Logo from "./Logo";
-import SearchInput from "./SearchInput";
+import SearchInput from "../features/main/search/SearchInput";
 
 function Header() {
   const { isAdmin } = useAuthStore();
